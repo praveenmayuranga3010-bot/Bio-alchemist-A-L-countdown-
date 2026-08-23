@@ -432,10 +432,10 @@
     </div>
 
     <script>
-        // --- Dynamic Service Worker for 100% Offline Support ---
+        // --- Dynamic Service Worker for Offline Support ---
         if ('serviceWorker' in navigator) {
             const swCode = `
-                const CACHE_NAME = 'bio-countdown-v2';
+                const CACHE_NAME = 'bio-countdown-v3';
                 self.addEventListener('install', e => {
                     e.waitUntil(
                         caches.open(CACHE_NAME).then(cache => cache.addAll(['./']))
@@ -457,7 +457,7 @@
             document.body.className = themeName;
         }
 
-        // --- Updated Accurate Countdown Dates (August 3 @ 08:30 AM) ---
+        // --- Countdown Target Dates ---
         const targets = {
             '2027': new Date('August 3, 2027 08:30:00').getTime(),
             '2028': new Date('August 3, 2028 08:30:00').getTime()
@@ -520,136 +520,160 @@
             document.getElementById('sw-start').innerText = 'Start Session';
         }
 
-        // --- Ultra-Enhanced 20-Second Audio Synthesizer Engine ---
+        // --- Robust Web Audio API Synthesizer (Fixed Autoplay Bug) ---
         let audioCtx = null;
+        let activeOscillators = [];
+        let soundTimer = null;
         let isPlayingSound = false;
-        let soundTimeout = null;
 
-        function initAudio() {
-            if (!audioCtx) {
+        function getAudioContext() {
+            if (!audioCtx || audioCtx.state === 'closed') {
                 audioCtx = new (window.AudioContext || window.webkitAudioContext)();
             }
             if (audioCtx.state === 'suspended') {
                 audioCtx.resume();
             }
+            return audioCtx;
+        }
+
+        // Enable Audio Context on First User Click anywhere on Page
+        document.addEventListener('click', () => {
+            getAudioContext();
+        }, { once: true });
+
+        function stopSound() {
+            if (soundTimer) {
+                clearTimeout(soundTimer);
+                soundTimer = null;
+            }
+            activeOscillators.forEach(osc => {
+                try { osc.stop(); osc.disconnect(); } catch(e) {}
+            });
+            activeOscillators = [];
+            isPlayingSound = false;
+            document.getElementById('test-btn').innerText = 'Test Sound';
         }
 
         function playSelectedSound(durationSec = 20) {
-            initAudio();
-            stopSound();
+            stopSound(); // Clear any playing instance
+            const ctx = getAudioContext();
             isPlayingSound = true;
+            document.getElementById('test-btn').innerText = 'Stop Sound';
+
             const type = document.getElementById('alarm-sound-type').value;
-            const startTime = audioCtx.currentTime;
+            const startTime = ctx.currentTime;
 
             if (type === 'radar') {
-                // iOS Radar Style (High Pitch Beep Sequence)
+                // High Pitch Radar Beep Sequence
                 for (let t = 0; t < durationSec; t += 0.8) {
-                    const osc1 = audioCtx.createOscillator();
-                    const osc2 = audioCtx.createOscillator();
-                    const gain = audioCtx.createGain();
+                    const osc1 = ctx.createOscillator();
+                    const osc2 = ctx.createOscillator();
+                    const gain = ctx.createGain();
 
                     osc1.type = 'sine'; osc2.type = 'sine';
-                    osc1.frequency.setValueAtTime(1760, startTime + t); // A6
-                    osc2.frequency.setValueAtTime(2637, startTime + t); // E7
+                    osc1.frequency.setValueAtTime(1760, startTime + t);
+                    osc2.frequency.setValueAtTime(2637, startTime + t);
 
-                    gain.gain.setValueAtTime(0.3, startTime + t);
+                    gain.gain.setValueAtTime(0.4, startTime + t);
                     gain.gain.exponentialRampToValueAtTime(0.0001, startTime + t + 0.35);
 
                     osc1.connect(gain); osc2.connect(gain);
-                    gain.connect(audioCtx.destination);
+                    gain.connect(ctx.destination);
 
                     osc1.start(startTime + t); osc2.start(startTime + t);
                     osc1.stop(startTime + t + 0.35); osc2.stop(startTime + t + 0.35);
+
+                    activeOscillators.push(osc1, osc2);
                 }
             } else if (type === 'siren') {
-                // Heavy Loud Siren
+                // Heavy Siren
                 for (let t = 0; t < durationSec; t += 1.2) {
-                    const osc = audioCtx.createOscillator();
-                    const gain = audioCtx.createGain();
+                    const osc = ctx.createOscillator();
+                    const gain = ctx.createGain();
 
                     osc.type = 'sawtooth';
                     osc.frequency.setValueAtTime(500, startTime + t);
                     osc.frequency.linearRampToValueAtTime(1400, startTime + t + 0.6);
                     osc.frequency.linearRampToValueAtTime(500, startTime + t + 1.2);
 
-                    gain.gain.setValueAtTime(0.25, startTime + t);
-                    gain.gain.setValueAtTime(0.25, startTime + t + 1.1);
-                    gain.gain.exponentialRampToValueAtTime(0.0001, startTime + t + 1.2);
+                    gain.gain.setValueAtTime(0.3, startTime + t);
+                    gain.gain.exponentialRampToValueAtTime(0.0001, startTime + t + 1.15);
 
-                    osc.connect(gain); gain.connect(audioCtx.destination);
-                    osc.start(startTime + t); osc.stop(startTime + t + 1.2);
+                    osc.connect(gain); gain.connect(ctx.destination);
+                    osc.start(startTime + t); osc.stop(startTime + t + 1.15);
+
+                    activeOscillators.push(osc);
                 }
             } else if (type === 'brass') {
-                // Epic Victory Horns Pattern
+                // Epic Brass Pattern
                 const notes = [261.63, 329.63, 392.00, 523.25, 392.00, 523.25];
                 let count = 0;
                 for (let t = 0; t < durationSec; t += 0.5) {
-                    const osc = audioCtx.createOscillator();
-                    const gain = audioCtx.createGain();
+                    const osc = ctx.createOscillator();
+                    const gain = ctx.createGain();
 
                     osc.type = 'triangle';
                     osc.frequency.setValueAtTime(notes[count % notes.length], startTime + t);
 
-                    gain.gain.setValueAtTime(0.35, startTime + t);
+                    gain.gain.setValueAtTime(0.4, startTime + t);
                     gain.gain.exponentialRampToValueAtTime(0.0001, startTime + t + 0.45);
 
-                    osc.connect(gain); gain.connect(audioCtx.destination);
+                    osc.connect(gain); gain.connect(ctx.destination);
                     osc.start(startTime + t); osc.stop(startTime + t + 0.45);
+
+                    activeOscillators.push(osc);
                     count++;
                 }
             } else if (type === 'techno') {
-                // Cyberpunk Arpeggio Sequence
+                // Cyberpunk Arpeggio
                 const arpeggio = [440, 554.37, 659.25, 830.61, 880, 1108.73];
                 let count = 0;
                 for (let t = 0; t < durationSec; t += 0.15) {
-                    const osc = audioCtx.createOscillator();
-                    const gain = audioCtx.createGain();
+                    const osc = ctx.createOscillator();
+                    const gain = ctx.createGain();
 
                     osc.type = 'square';
                     osc.frequency.setValueAtTime(arpeggio[count % arpeggio.length], startTime + t);
 
-                    gain.gain.setValueAtTime(0.15, startTime + t);
-                    gain.gain.setValueAtTime(0.01, startTime + t + 0.12);
+                    gain.gain.setValueAtTime(0.2, startTime + t);
+                    gain.gain.exponentialRampToValueAtTime(0.0001, startTime + t + 0.12);
 
-                    osc.connect(gain); gain.connect(audioCtx.destination);
+                    osc.connect(gain); gain.connect(ctx.destination);
                     osc.start(startTime + t); osc.stop(startTime + t + 0.12);
+
+                    activeOscillators.push(osc);
                     count++;
                 }
             }
 
-            soundTimeout = setTimeout(() => {
-                isPlayingSound = false;
-                document.getElementById('test-btn').innerText = 'Test Sound';
+            soundTimer = setTimeout(() => {
+                stopSound();
             }, durationSec * 1000);
         }
 
-        function stopSound() {
-            if (soundTimeout) clearTimeout(soundTimeout);
-            if (audioCtx) audioCtx.close().then(() => { audioCtx = null; });
-            isPlayingSound = false;
-            document.getElementById('test-btn').innerText = 'Test Sound';
-        }
-
         function toggleTestSound() {
+            getAudioContext();
             if (isPlayingSound) {
                 stopSound();
             } else {
                 playSelectedSound(20);
-                document.getElementById('test-btn').innerText = 'Stop Sound';
             }
         }
 
-        // --- Alarm Logic ---
+        // --- Alarm System Logic ---
         let alarmTime = null;
         let alarmInterval = null;
 
         function setAlarm() {
-            initAudio();
+            getAudioContext(); // Activate Audio Context on button click
             const val = document.getElementById('alarm-time').value;
-            if (!val) return;
+            if (!val) {
+                alert("කරුණාකර Alarm එක සඳහා වෙලාවක් තෝරන්න!");
+                return;
+            }
             
             alarmTime = val;
-            document.getElementById('alarm-status').innerText = `🔔 Alarm active for ${alarmTime}`;
+            document.getElementById('alarm-status').innerText = `🔔 Alarm Active for ${alarmTime}`;
             
             if (alarmInterval) clearInterval(alarmInterval);
             alarmInterval = setInterval(() => {
@@ -659,7 +683,7 @@
                     playSelectedSound(20);
                     setTimeout(() => {
                         alert('⏰ TIME TO STUDY! Bio Alchemist Session Started!');
-                    }, 200);
+                    }, 300);
                     clearAlarm();
                 }
             }, 1000);
