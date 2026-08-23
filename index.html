@@ -4,10 +4,14 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Bio Alchemist A/L Countdown</title>
-    <!-- Web App & PWA Support -->
-    <link rel="manifest" href="data:application/json;base64,ewogICJuYW1lIjogIkJpbyBBbGNoZW1pc3QgQS9MIENvdW50ZG93biIsCiAgInNob3J0X25hbWUiOiAiQmlvQWxjaGVtaXN0IiwKICAic3RhcnRfdXJsIjogIi4iLAogICJkaXNwbGF5IjogInN0YW5kYWxvbmUiLAogICJiYWNrZ3JvdW5kX2NvbG9yIjogIiMwNzA5MGUiLAogICJ0aGVtZV_jb2xvcIjogIiNmNWllNmIiCn0=">
+    
+    <!-- Offline App (PWA) Manifest -->
+    <link rel="manifest" href='data:application/json,{"name":"Bio Alchemist A/L","short_name":"BioAlchemist","start_url":".","display":"standalone","background_color":"#07090e","theme_color":"#07090e"}'>
     <meta name="theme-color" content="#07090e">
+    
+    <!-- Google Fonts with System Fallbacks for Offline Mode -->
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
+    
     <style>
         /* Classy Dynamic Themes */
         :root {
@@ -70,7 +74,7 @@
             box-sizing: border-box;
             margin: 0;
             padding: 0;
-            font-family: 'Outfit', sans-serif;
+            font-family: 'Outfit', -apple-system, BlinkMacSystemFont, sans-serif;
             -webkit-tap-highlight-color: transparent;
             transition: background-color 0.4s ease, border-color 0.4s ease, color 0.4s ease;
         }
@@ -98,11 +102,7 @@
             z-index: 2;
         }
 
-        /* Header UI */
-        header {
-            text-align: center;
-            position: relative;
-        }
+        header { text-align: center; position: relative; }
 
         .title {
             font-family: 'Space Grotesk', sans-serif;
@@ -129,7 +129,6 @@
             text-shadow: 0 0 10px var(--accent-glow);
         }
 
-        /* Glassmorphism Card Style */
         .glass-card {
             background: var(--card-glass);
             backdrop-filter: blur(25px);
@@ -150,7 +149,6 @@
             background: linear-gradient(90deg, transparent, var(--primary-accent), transparent);
         }
 
-        /* Classy Theme Selector Bar */
         .theme-bar {
             display: flex;
             justify-content: center;
@@ -169,10 +167,7 @@
             transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275), border-color 0.3s ease;
         }
 
-        .theme-dot:hover {
-            transform: scale(1.25);
-            border-color: #fff;
-        }
+        .theme-dot:hover { transform: scale(1.25); border-color: #fff; }
 
         .dot-gold { background: linear-gradient(135deg, #f5ee6b, #fbbf24); }
         .dot-blue { background: linear-gradient(135deg, #38bdf8, #0284c7); }
@@ -181,7 +176,6 @@
         .dot-purple { background: linear-gradient(135deg, #c084fc, #9333ea); }
         .dot-orange { background: linear-gradient(135deg, #fb923c, #ea580c); }
 
-        /* Year Selector */
         .selector-group {
             display: flex;
             background: rgba(0, 0, 0, 0.3);
@@ -210,7 +204,6 @@
             box-shadow: 0 4px 15px var(--accent-glow);
         }
 
-        /* Countdown Grid */
         .countdown-grid {
             display: grid;
             grid-template-columns: repeat(4, 1fr);
@@ -241,7 +234,6 @@
             margin-top: 0.6rem;
         }
 
-        /* Widgets Grid */
         .widget-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
@@ -264,7 +256,6 @@
             gap: 0.6rem;
         }
 
-        /* Displays & Inputs */
         .display-digital {
             font-family: 'Space Grotesk', sans-serif;
             font-size: 2.2rem;
@@ -275,10 +266,7 @@
             letter-spacing: 2px;
         }
 
-        .btn-group {
-            display: flex;
-            gap: 0.6rem;
-        }
+        .btn-group { display: flex; gap: 0.6rem; }
 
         .btn {
             flex: 1;
@@ -319,12 +307,8 @@
             margin-bottom: 0.8rem;
         }
 
-        select option {
-            background: #0d1117;
-            color: #fff;
-        }
+        select option { background: #0d1117; color: #fff; }
 
-        /* Study Tips */
         .tips-list {
             list-style: none;
             display: flex;
@@ -342,11 +326,8 @@
             color: #e2e8f0;
         }
 
-        .tips-list strong {
-            color: var(--primary-accent);
-        }
+        .tips-list strong { color: var(--primary-accent); }
 
-        /* Install Button */
         .install-btn {
             width: 100%;
             padding: 15px;
@@ -378,7 +359,6 @@
             <h1 class="title">Bio Alchemist A/L</h1>
             <div class="engineer">ENGINEERED BY <span>SHADOW</span></div>
             
-            <!-- Clean Classy Theme Selector -->
             <div class="theme-bar">
                 <div class="theme-dot dot-gold" onclick="changeTheme('theme-gold')" title="Cheese Gold"></div>
                 <div class="theme-dot dot-blue" onclick="changeTheme('theme-skyblue')" title="Sky Blue"></div>
@@ -452,6 +432,26 @@
     </div>
 
     <script>
+        // --- Dynamic Service Worker for 100% Offline Support ---
+        if ('serviceWorker' in navigator) {
+            const swCode = `
+                const CACHE_NAME = 'bio-countdown-v1';
+                self.addEventListener('install', e => {
+                    e.waitUntil(
+                        caches.open(CACHE_NAME).then(cache => cache.addAll(['./']))
+                    );
+                });
+                self.addEventListener('fetch', e => {
+                    e.respondWith(
+                        caches.match(e.request).then(res => res || fetch(e.request))
+                    );
+                });
+            `;
+            const blob = new Blob([swCode], { type: 'application/javascript' });
+            const swUrl = URL.createObjectURL(blob);
+            navigator.serviceWorker.register(swUrl).catch(() => {});
+        }
+
         // --- Theme Switcher ---
         function changeTheme(themeName) {
             document.body.className = themeName;
@@ -515,7 +515,7 @@
             document.getElementById('sw-start').innerText = 'Start Session';
         }
 
-        // --- Advanced Audio Synthesis Engine (Multiple Sound Effects) ---
+        // --- Audio Synthesis Engine (Offline Native Web Audio API) ---
         let audioCtx = null;
 
         function initAudio() {
@@ -593,9 +593,7 @@
             }
         }
 
-        function testSound() {
-            playSelectedSound();
-        }
+        function testSound() { playSelectedSound(); }
 
         // --- Alarm Logic ---
         let alarmTime = null;
@@ -641,15 +639,12 @@
         function installPWA() {
             if (deferredPrompt) {
                 deferredPrompt.prompt();
-                deferredPrompt.userChoice.then(() => {
-                    deferredPrompt = null;
-                });
+                deferredPrompt.userChoice.then(() => { deferredPrompt = null; });
             } else {
                 alert('මචං, Browser Menu (⋮ or Share) එකට ගිහින් "Add to Home Screen" තෝරන්න!');
             }
         }
 
-        // Initial Load
         updateCountdown();
     </script>
 </body>
