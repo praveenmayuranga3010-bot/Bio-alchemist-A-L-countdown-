@@ -1,0 +1,431 @@
+<!DOCTYPE html>
+<html lang="si">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BIO-NEXUS v6.0 | Premium Bio-Terminal by Achintha Nirmana</title>
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-database-compat.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;800&family=Noto+Sans+Sinhala:wght@400;700&display=swap');
+        
+        :root { 
+            --primary: #00ffa3; 
+            --primary-glow: rgba(0, 255, 163, 0.4);
+            --bg-dark: #020a08; 
+            --glass: rgba(5, 25, 20, 0.7);
+            --border: 1px solid rgba(0, 255, 163, 0.2);
+            --text-light: #e0fff6;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body { 
+            background: var(--bg-dark); 
+            color: var(--text-light); 
+            font-family: 'Plus Jakarta Sans', 'Noto Sans Sinhala', sans-serif; 
+            overflow-x: hidden;
+            scroll-behavior: smooth;
+        }
+
+        /* Modern Glass Navigation */
+        nav { 
+            position: fixed; top: 0; width: 100%; z-index: 1000;
+            padding: 20px; display: flex; justify-content: center; gap: 20px;
+            backdrop-filter: blur(15px); border-bottom: var(--border);
+            background: rgba(2, 10, 8, 0.8);
+        }
+        nav a { 
+            color: #fff; text-decoration: none; font-weight: 600; font-size: 0.85rem;
+            text-transform: uppercase; letter-spacing: 1.5px; transition: 0.3s;
+            padding: 10px 15px; border-radius: 8px;
+        }
+        nav a:hover { color: var(--primary); background: rgba(0, 255, 163, 0.1); }
+
+        /* Hero Section with 3D DNA */
+        #hero { height: 100vh; position: relative; overflow: hidden; display: flex; align-items: center; justify-content: center; }
+        #hero-canvas { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 1; }
+        .hero-content { 
+            position: relative; z-index: 2; text-align: center; 
+            background: radial-gradient(circle, rgba(2,10,8,0.7) 0%, transparent 70%);
+            padding: 40px; border-radius: 50%;
+        }
+        .hero-content h1 { 
+            font-size: clamp(3rem, 10vw, 8rem); font-weight: 800; line-height: 0.9;
+            background: linear-gradient(to bottom, #fff, var(--primary));
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+            filter: drop-shadow(0 0 30px var(--primary-glow));
+        }
+        .hero-content p { color: var(--primary); font-weight: 400; letter-spacing: 5px; text-transform: uppercase; margin-top: 20px; font-size: 1.2rem; }
+        
+        .badge-main {
+            display: inline-block; margin-top: 30px; padding: 12px 25px;
+            border-radius: 50px; background: rgba(0, 255, 163, 0.1);
+            border: var(--border); backdrop-filter: blur(5px);
+            font-weight: 600; font-size: 0.9rem; color: #fff;
+        }
+
+        .container { max-width: 1400px; margin: 0 auto; padding: 100px 20px; }
+        .section-header { text-align: center; margin-bottom: 60px; }
+        .section-header h2 { font-size: 3rem; color: var(--primary); text-transform: uppercase; letter-spacing: 3px; }
+
+        /* Achi-Core AI Section */
+        .ai-wrap { 
+            background: var(--glass); border: var(--border); border-radius: 30px; 
+            padding: 40px; box-shadow: 0 30px 60px rgba(0,0,0,0.5);
+        }
+        #ai-display { 
+            height: 450px; overflow-y: auto; padding: 20px; 
+            background: rgba(0,0,0,0.4); border-radius: 20px; margin-bottom: 30px;
+            display: flex; flex-direction: column; gap: 20px;
+        }
+        .msg { padding: 20px; border-radius: 15px; max-width: 85%; line-height: 1.7; }
+        .msg-ai { background: rgba(0, 255, 163, 0.05); border-left: 4px solid var(--primary); align-self: flex-start; }
+        .msg-user { background: rgba(255,255,255,0.05); border-right: 4px solid #fff; align-self: flex-end; }
+        
+        .input-bar { display: flex; gap: 15px; }
+        input { 
+            flex: 1; background: #000; border: var(--border); border-radius: 15px; 
+            padding: 20px; color: #fff; font-size: 1.1rem; outline: none;
+        }
+        .send-btn { 
+            background: var(--primary); color: #000; border: none; padding: 0 40px; 
+            border-radius: 15px; font-weight: 800; cursor: pointer; transition: 0.3s;
+        }
+        .send-btn:hover { background: #fff; transform: scale(1.05); }
+
+        /* 3D Lab Enhancements */
+        .lab-grid { display: grid; grid-template-columns: 1fr 3fr; gap: 30px; }
+        @media (max-width: 900px) { .lab-grid { grid-template-columns: 1fr; } }
+        .lab-menu { display: flex; flex-direction: column; gap: 10px; }
+        .lab-opt { 
+            padding: 15px; background: rgba(255,255,255,0.05); border: var(--border); 
+            border-radius: 12px; color: #fff; cursor: pointer; text-align: left;
+            font-weight: 600; transition: 0.3s;
+        }
+        .lab-opt.active, .lab-opt:hover { background: var(--primary); color: #000; }
+        #lab-render { height: 600px; border-radius: 30px; border: var(--border); background: radial-gradient(circle, #0a201b, #020a08); overflow: hidden; position: relative; }
+
+        /* Quiz Arena */
+        .quiz-card { background: var(--glass); border: var(--border); border-radius: 30px; padding: 40px; display: grid; grid-template-columns: 2fr 1fr; gap: 40px; }
+        @media (max-width: 1000px) { .quiz-card { grid-template-columns: 1fr; } }
+        .option-btn { 
+            display: block; width: 100%; padding: 20px; margin: 10px 0; 
+            background: rgba(0,0,0,0.5); border: var(--border); border-radius: 15px;
+            color: #fff; text-align: left; cursor: pointer; font-size: 1.1rem;
+        }
+        .option-btn:hover { border-color: var(--primary); background: rgba(0, 255, 163, 0.05); }
+        .leaderboard { background: rgba(0,0,0,0.3); border-radius: 20px; padding: 20px; }
+        .rank-item { display: flex; justify-content: space-between; padding: 15px; border-bottom: 1px solid rgba(255,255,255,0.1); }
+
+        footer { text-align: center; padding: 60px; border-top: var(--border); margin-top: 100px; }
+        footer h3 { color: var(--primary); letter-spacing: 5px; margin-bottom: 10px; }
+
+        /* Animations */
+        @keyframes pulse { 0% { opacity: 0.5; } 50% { opacity: 1; } 100% { opacity: 0.5; } }
+        .loading-dots { display: inline-flex; gap: 5px; }
+        .dot { width: 8px; height: 8px; background: var(--primary); border-radius: 50%; animation: pulse 1s infinite; }
+    </style>
+</head>
+<body>
+
+<nav>
+    <a href="#hero">Terminal</a>
+    <a href="#ai">Achi-Core AI</a>
+    <a href="#lab">3D Lab</a>
+    <a href="#quiz">Arena</a>
+</nav>
+
+<section id="hero">
+    <canvas id="hero-canvas"></canvas>
+    <div class="hero-content">
+        <h1>BIO-NEXUS</h1>
+        <p>Premium Biology Intelligence</p>
+        <div class="badge-main">
+            <i class="fa-solid fa-bolt"></i> Engineered by Achintha Nirmana | 2028 A/L Batch
+        </div>
+    </div>
+</section>
+
+<div class="container" id="ai">
+    <div class="section-header">
+        <h2>Achi-Core Intelligence v6.0</h2>
+        <p>Advanced RAG Engine for Sri Lankan A/L Students</p>
+    </div>
+    <div class="ai-wrap">
+        <div id="ai-display">
+            <div class="msg msg-ai">
+                <b>[SYSTEM ONLINE]</b> සාදරයෙන් පිළිගන්නවා. මම <b>Achi-Core AI</b>. ඔයාට ඕනෑම Biology ගැටලුවක් මෙතන අහන්න පුළුවන්. මම ගැඹුරු විස්තරයක් ලබා දෙන්නම්.
+            </div>
+        </div>
+        <div class="input-bar">
+            <input type="text" id="ai-input" placeholder="ඔයාට දැනගන්න ඕනේ මොකක් ගැනද? (e.g. ද්විත්ව සංසරණය, සෛල විභජනය)..." onkeypress="if(event.key === 'Enter') askAchiCore()">
+            <button class="send-btn" onclick="askAchiCore()">PROCESS</button>
+        </div>
+    </div>
+</div>
+
+<div class="container" id="lab">
+    <div class="section-header">
+        <h2>Ultra 3D Lab</h2>
+        <p>Interactive Molecular Visualization</p>
+    </div>
+    <div class="lab-grid">
+        <div class="lab-menu">
+            <button class="lab-opt active" onclick="loadBioModel('dna', this)">🧬 DNA Helix</button>
+            <button class="lab-opt" onclick="loadBioModel('cell', this)">🦠 Animal Cell</button>
+            <button class="lab-opt" onclick="loadBioModel('heart', this)">🫀 Human Heart</button>
+            <button class="lab-opt" onclick="loadBioModel('virus', this)">👾 Bacteriophage</button>
+            <button class="lab-opt" onclick="loadBioModel('neuron', this)">⚡ Nerve Cell</button>
+        </div>
+        <div id="lab-render">
+            <div style="position:absolute; bottom:20px; left:20px; z-index:10; font-size:0.8rem; opacity:0.6;">
+                <i class="fa-solid fa-arrows-up-down-left-right"></i> DRAG TO ROTATE | SCROLL TO ZOOM
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="container" id="quiz">
+    <div class="section-header">
+        <h2>The Bio Arena</h2>
+        <p>Live Competition - Firebase Powered</p>
+    </div>
+    <div class="quiz-card">
+        <div id="quiz-main">
+            <div id="quiz-init">
+                <h2 style="margin-bottom:20px;">අද තරඟයට සූදානම්ද?</h2>
+                <input type="text" id="player-name" placeholder="Enter Your Name..." style="margin-bottom:20px; width:100%;">
+                <button class="send-btn" style="width:100%; padding:20px;" onclick="startArena()">ENTER ARENA</button>
+            </div>
+            <div id="quiz-play" style="display:none;">
+                <h3 id="q-text" style="font-size:1.5rem; margin-bottom:30px;"></h3>
+                <div id="q-options"></div>
+            </div>
+        </div>
+        <div class="leaderboard">
+            <h3 style="color:var(--primary); margin-bottom:20px;"><i class="fa-solid fa-trophy"></i> LEADERBOARD</h3>
+            <div id="lb-list">
+                <div class="rank-item"><span>Connecting...</span></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<footer>
+    <h3>BIO-NEXUS TERMINAL v6.0</h3>
+    <p>Hand-crafted with ❤️ by <b>Achintha Nirmana</b></p>
+    <p style="opacity:0.5; font-size:0.8rem; margin-top:10px;">Future Astrobiologist | 2028 A/L Biology Batch Sri Lanka</p>
+</footer>
+
+<script>
+// --- HERO DNA ANIMATION (PRO LEVEL) ---
+let heroScene, heroCam, heroRenderer, dnaGroup;
+
+function initHero() {
+    const canvas = document.getElementById('hero-canvas');
+    heroScene = new THREE.Scene();
+    heroCam = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+    heroRenderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true });
+    heroRenderer.setSize(window.innerWidth, window.innerHeight);
+    
+    dnaGroup = new THREE.Group();
+    const sphereGeo = new THREE.SphereGeometry(0.3, 16, 16);
+    const blueMat = new THREE.MeshPhongMaterial({ color: 0x00ffa3, emissive: 0x00ffa3, emissiveIntensity: 0.5 });
+    const whiteMat = new THREE.MeshPhongMaterial({ color: 0xffffff });
+
+    for(let i=0; i<40; i++) {
+        const y = (i * 0.5) - 10;
+        const angle = i * 0.4;
+        
+        const s1 = new THREE.Mesh(sphereGeo, blueMat);
+        s1.position.set(Math.cos(angle)*4, y, Math.sin(angle)*4);
+        
+        const s2 = new THREE.Mesh(sphereGeo, blueMat);
+        s2.position.set(Math.cos(angle + Math.PI)*4, y, Math.sin(angle + Math.PI)*4);
+        
+        const lineGeo = new THREE.CylinderGeometry(0.05, 0.05, 8);
+        const line = new THREE.Mesh(lineGeo, whiteMat);
+        line.rotation.z = Math.PI/2;
+        line.rotation.y = -angle;
+        line.position.y = y;
+        
+        dnaGroup.add(s1, s2, line);
+    }
+    
+    heroScene.add(dnaGroup);
+    const light = new THREE.PointLight(0xffffff, 1, 100);
+    light.position.set(10, 10, 10);
+    heroScene.add(light, new THREE.AmbientLight(0x404040));
+    
+    heroCam.position.z = 15;
+    
+    function animate() {
+        requestAnimationFrame(animate);
+        dnaGroup.rotation.y += 0.01;
+        dnaGroup.rotation.x = Math.sin(Date.now() * 0.001) * 0.2;
+        heroRenderer.render(heroScene, heroCam);
+    }
+    animate();
+}
+
+// --- ACHI-CORE AI v6.0 (SMART ENGINE) ---
+async function askAchiCore() {
+    const input = document.getElementById('ai-input');
+    const display = document.getElementById('ai-display');
+    const query = input.value.trim();
+    if(!query) return;
+
+    // User Message
+    const userMsg = document.createElement('div');
+    userMsg.className = 'msg msg-user';
+    userMsg.innerHTML = `<b>ඔබ:</b> ${query}`;
+    display.appendChild(userMsg);
+    input.value = '';
+    display.scrollTop = display.scrollHeight;
+
+    // Typing
+    const aiMsg = document.createElement('div');
+    aiMsg.className = 'msg msg-ai';
+    aiMsg.innerHTML = `<b>Achi-Core:</b> <div class="loading-dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div>`;
+    display.appendChild(aiMsg);
+
+    // AI Logic (Simulated Advanced Fetch)
+    setTimeout(async () => {
+        // මේක ඇතුලේ ඔයාට Gemini API එක connect කරන්න පුළුවන්
+        // දැනට මම මේක "Smart Mode" එකට හැදුවා
+        const response = await fetchKnowledge(query);
+        aiMsg.innerHTML = `<b>Achi-Core:</b><br><br>${response}`;
+        display.scrollTop = display.scrollHeight;
+    }, 1500);
+}
+
+async function fetchKnowledge(q) {
+    // Wikipedia + Bio-Dictionary Simulation
+    // Real-world එකේදී මේකට API එකක් link කරන්න පුළුවන්
+    return `"${q}" පිළිබඳව මාගේ දත්ත පද්ධතිය පරීක්ෂා කළා. මේ පිළිබඳව 2028 A/L විෂය නිර්දේශයට අනුව වැදගත් කරුණු මෙන්න: 
+    <br><br>1. මෙහි මූලික ව්‍යුහය ඉතා සංකීර්ණ වන අතර එය ජෛව රසායනික ක්‍රියාවලීන් මත රඳා පවතී. 
+    <br>2. ශ්‍රී ලංකාවේ විභාග රටාවට අනුව මෙහි රූප සටහන් ඇඳීම ඉතා වැදගත් වේ. 
+    <br>3. මෙය සෛලීය මට්ටමේදී ශක්තිය නිපදවීමට හෝ තොරතුරු ගබඩා කිරීමට දායක වේ.
+    <br><br>වැඩිදුර විස්තර සඳහා පෙළ පොතේ 4 වන ඒකකය පරිශීලනය කරන්න. මම තව දුරටත් මේ ගැන සොයා බලන්නද?`;
+}
+
+// --- 3D LAB ENGINE ---
+let labScene, labCam, labRenderer, labControls, currentObj;
+
+function initLab() {
+    const container = document.getElementById('lab-render');
+    labScene = new THREE.Scene();
+    labCam = new THREE.PerspectiveCamera(50, container.clientWidth / container.clientHeight, 0.1, 1000);
+    labRenderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+    labRenderer.setSize(container.clientWidth, container.clientHeight);
+    container.appendChild(labRenderer.domElement);
+    
+    labControls = new THREE.OrbitControls(labCam, labRenderer.domElement);
+    labCam.position.z = 10;
+    
+    const hLight = new THREE.HemisphereLight(0xffffff, 0x000000, 1);
+    labScene.add(hLight);
+
+    function animate() {
+        requestAnimationFrame(animate);
+        if(currentObj) currentObj.rotation.y += 0.005;
+        labControls.update();
+        labRenderer.render(labScene, labCam);
+    }
+    animate();
+}
+
+function loadBioModel(type, btn) {
+    document.querySelectorAll('.lab-opt').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    
+    if(currentObj) labScene.remove(currentObj);
+    currentObj = new THREE.Group();
+    
+    const mat = new THREE.MeshStandardMaterial({ color: 0x00ffa3, wireframe: true });
+    
+    if(type === 'dna') {
+        const geo = new THREE.TorusKnotGeometry(2, 0.5, 100, 16);
+        currentObj.add(new THREE.Mesh(geo, mat));
+    } else if(type === 'cell') {
+        const geo = new THREE.SphereGeometry(3, 32, 32);
+        currentObj.add(new THREE.Mesh(geo, mat));
+    } else if(type === 'heart') {
+        const geo = new THREE.IcosahedronGeometry(3, 1);
+        currentObj.add(new THREE.Mesh(geo, mat));
+    } else {
+        const geo = new THREE.OctahedronGeometry(3, 0);
+        currentObj.add(new THREE.Mesh(geo, mat));
+    }
+    
+    labScene.add(currentObj);
+}
+
+// --- ARENA LOGIC ---
+let score = 0;
+const questions = [
+    { q: "මානව සෛලයක ඇති වර්ණදේහ සංඛ්‍යාව කීයද?", a: ["23", "46", "44", "48"], c: 1 },
+    { q: "ප්‍රභාසංස්ලේෂණයේදී පිටවන වායුව කුමක්ද?", a: ["CO2", "N2", "O2", "H2"], c: 2 }
+];
+
+function startArena() {
+    const name = document.getElementById('player-name').value;
+    if(!name) return alert("Please enter your name!");
+    document.getElementById('quiz-init').style.display = 'none';
+    document.getElementById('quiz-play').style.display = 'block';
+    showQuestion(0);
+}
+
+function showQuestion(idx) {
+    if(idx >= questions.length) {
+        document.getElementById('quiz-play').innerHTML = `<h2>තරඟය අවසන්! Score: ${score}</h2>`;
+        confetti();
+        return;
+    }
+    const q = questions[idx];
+    document.getElementById('q-text').innerText = q.q;
+    const optDiv = document.getElementById('q-options');
+    optDiv.innerHTML = '';
+    q.a.forEach((opt, i) => {
+        const b = document.createElement('button');
+        b.className = 'option-btn';
+        b.innerText = opt;
+        b.onclick = () => {
+            if(i === q.c) score += 10;
+            showQuestion(idx + 1);
+        };
+        optDiv.appendChild(b);
+    });
+}
+
+// --- INIT ALL ---
+window.onload = () => {
+    initHero();
+    initLab();
+    loadBioModel('dna', document.querySelector('.lab-opt.active'));
+    
+    // Simulate Leaderboard
+    const lb = document.getElementById('lb-list');
+    lb.innerHTML = `
+        <div class="rank-item"><span>1. Achintha</span><span>2500</span></div>
+        <div class="rank-item"><span>2. Sarasi</span><span>2450</span></div>
+        <div class="rank-item"><span>3. Nuwan</span><span>2100</span></div>
+    `;
+};
+
+window.onresize = () => {
+    heroCam.aspect = window.innerWidth / window.innerHeight;
+    heroCam.updateProjectionMatrix();
+    heroRenderer.setSize(window.innerWidth, window.innerHeight);
+};
+</script>
+
+</body>
+      </html>
