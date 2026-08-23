@@ -3,429 +3,654 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>BIO-NEXUS v6.0 | Premium Bio-Terminal by Achintha Nirmana</title>
-    
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-database-compat.js"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    
+    <title>Bio Alchemist A/L Countdown</title>
+    <!-- Web App & PWA Support -->
+    <link rel="manifest" href="data:application/json;base64,ewogICJuYW1lIjogIkJpbyBBbGNoZW1pc3QgQS9MIENvdW50ZG93biIsCiAgInNob3J0X25hbWUiOiAiQmlvQWxjaGVtaXN0IiwKICAic3RhcnRfdXJsIjogIi4iLAogICJkaXNwbGF5IjogInN0YW5kYWxvbmUiLAogICJiYWNrZ3JvdW5kX2NvbG9yIjogIiMwNzA5MGUiLAogICJ0aGVtZV_jb2xvcIjogIiNmNWllNmIiCn0=">
+    <meta name="theme-color" content="#07090e">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;800&family=Noto+Sans+Sinhala:wght@400;700&display=swap');
-        
-        :root { 
-            --primary: #00ffa3; 
-            --primary-glow: rgba(0, 255, 163, 0.4);
-            --bg-dark: #020a08; 
-            --glass: rgba(5, 25, 20, 0.7);
-            --border: 1px solid rgba(0, 255, 163, 0.2);
-            --text-light: #e0fff6;
+        /* Classy Dynamic Themes */
+        :root {
+            --bg-deep: #07090e;
+            --card-glass: rgba(18, 22, 32, 0.75);
+            --border-glass: rgba(245, 238, 107, 0.2);
+            --primary-accent: #f5ee6b;
+            --secondary-accent: #fbbf24;
+            --accent-glow: rgba(245, 238, 107, 0.25);
+            --text-main: #f8fafc;
+            --text-muted: #a0aec0;
         }
 
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        
-        body { 
-            background: var(--bg-dark); 
-            color: var(--text-light); 
-            font-family: 'Plus Jakarta Sans', 'Noto Sans Sinhala', sans-serif; 
+        body.theme-skyblue {
+            --bg-deep: #06111e;
+            --card-glass: rgba(13, 29, 49, 0.75);
+            --border-glass: rgba(56, 189, 248, 0.2);
+            --primary-accent: #38bdf8;
+            --secondary-accent: #0284c7;
+            --accent-glow: rgba(56, 189, 248, 0.25);
+        }
+
+        body.theme-neonpink {
+            --bg-deep: #140712;
+            --card-glass: rgba(35, 15, 31, 0.75);
+            --border-glass: rgba(244, 114, 182, 0.2);
+            --primary-accent: #f472b6;
+            --secondary-accent: #db2777;
+            --accent-glow: rgba(244, 114, 182, 0.25);
+        }
+
+        body.theme-green {
+            --bg-deep: #05160a;
+            --card-glass: rgba(12, 35, 18, 0.75);
+            --border-glass: rgba(74, 222, 128, 0.2);
+            --primary-accent: #4ade80;
+            --secondary-accent: #16a34a;
+            --accent-glow: rgba(74, 222, 128, 0.25);
+        }
+
+        body.theme-purple {
+            --bg-deep: #0f071a;
+            --card-glass: rgba(26, 15, 42, 0.75);
+            --border-glass: rgba(192, 132, 252, 0.2);
+            --primary-accent: #c084fc;
+            --secondary-accent: #9333ea;
+            --accent-glow: rgba(192, 132, 252, 0.25);
+        }
+
+        body.theme-orange {
+            --bg-deep: #190b07;
+            --card-glass: rgba(43, 20, 13, 0.75);
+            --border-glass: rgba(251, 146, 60, 0.2);
+            --primary-accent: #fb923c;
+            --secondary-accent: #ea580c;
+            --accent-glow: rgba(251, 146, 60, 0.25);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Outfit', sans-serif;
+            -webkit-tap-highlight-color: transparent;
+            transition: background-color 0.4s ease, border-color 0.4s ease, color 0.4s ease;
+        }
+
+        body {
+            background-color: var(--bg-deep);
+            background-image: 
+                radial-gradient(circle at 20% 20%, var(--accent-glow) 0%, transparent 45%),
+                radial-gradient(circle at 80% 80%, var(--accent-glow) 0%, transparent 45%);
+            color: var(--text-main);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 2.5rem 1rem;
             overflow-x: hidden;
-            scroll-behavior: smooth;
         }
 
-        /* Modern Glass Navigation */
-        nav { 
-            position: fixed; top: 0; width: 100%; z-index: 1000;
-            padding: 20px; display: flex; justify-content: center; gap: 20px;
-            backdrop-filter: blur(15px); border-bottom: var(--border);
-            background: rgba(2, 10, 8, 0.8);
-        }
-        nav a { 
-            color: #fff; text-decoration: none; font-weight: 600; font-size: 0.85rem;
-            text-transform: uppercase; letter-spacing: 1.5px; transition: 0.3s;
-            padding: 10px 15px; border-radius: 8px;
-        }
-        nav a:hover { color: var(--primary); background: rgba(0, 255, 163, 0.1); }
-
-        /* Hero Section with 3D DNA */
-        #hero { height: 100vh; position: relative; overflow: hidden; display: flex; align-items: center; justify-content: center; }
-        #hero-canvas { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 1; }
-        .hero-content { 
-            position: relative; z-index: 2; text-align: center; 
-            background: radial-gradient(circle, rgba(2,10,8,0.7) 0%, transparent 70%);
-            padding: 40px; border-radius: 50%;
-        }
-        .hero-content h1 { 
-            font-size: clamp(3rem, 10vw, 8rem); font-weight: 800; line-height: 0.9;
-            background: linear-gradient(to bottom, #fff, var(--primary));
-            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-            filter: drop-shadow(0 0 30px var(--primary-glow));
-        }
-        .hero-content p { color: var(--primary); font-weight: 400; letter-spacing: 5px; text-transform: uppercase; margin-top: 20px; font-size: 1.2rem; }
-        
-        .badge-main {
-            display: inline-block; margin-top: 30px; padding: 12px 25px;
-            border-radius: 50px; background: rgba(0, 255, 163, 0.1);
-            border: var(--border); backdrop-filter: blur(5px);
-            font-weight: 600; font-size: 0.9rem; color: #fff;
+        .container {
+            width: 100%;
+            max-width: 850px;
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+            z-index: 2;
         }
 
-        .container { max-width: 1400px; margin: 0 auto; padding: 100px 20px; }
-        .section-header { text-align: center; margin-bottom: 60px; }
-        .section-header h2 { font-size: 3rem; color: var(--primary); text-transform: uppercase; letter-spacing: 3px; }
+        /* Header UI */
+        header {
+            text-align: center;
+            position: relative;
+        }
 
-        /* Achi-Core AI Section */
-        .ai-wrap { 
-            background: var(--glass); border: var(--border); border-radius: 30px; 
-            padding: 40px; box-shadow: 0 30px 60px rgba(0,0,0,0.5);
+        .title {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 2.8rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #ffffff 20%, var(--primary-accent) 70%, var(--secondary-accent) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            letter-spacing: -1px;
+            text-shadow: 0 0 25px var(--accent-glow);
         }
-        #ai-display { 
-            height: 450px; overflow-y: auto; padding: 20px; 
-            background: rgba(0,0,0,0.4); border-radius: 20px; margin-bottom: 30px;
-            display: flex; flex-direction: column; gap: 20px;
-        }
-        .msg { padding: 20px; border-radius: 15px; max-width: 85%; line-height: 1.7; }
-        .msg-ai { background: rgba(0, 255, 163, 0.05); border-left: 4px solid var(--primary); align-self: flex-start; }
-        .msg-user { background: rgba(255,255,255,0.05); border-right: 4px solid #fff; align-self: flex-end; }
-        
-        .input-bar { display: flex; gap: 15px; }
-        input { 
-            flex: 1; background: #000; border: var(--border); border-radius: 15px; 
-            padding: 20px; color: #fff; font-size: 1.1rem; outline: none;
-        }
-        .send-btn { 
-            background: var(--primary); color: #000; border: none; padding: 0 40px; 
-            border-radius: 15px; font-weight: 800; cursor: pointer; transition: 0.3s;
-        }
-        .send-btn:hover { background: #fff; transform: scale(1.05); }
 
-        /* 3D Lab Enhancements */
-        .lab-grid { display: grid; grid-template-columns: 1fr 3fr; gap: 30px; }
-        @media (max-width: 900px) { .lab-grid { grid-template-columns: 1fr; } }
-        .lab-menu { display: flex; flex-direction: column; gap: 10px; }
-        .lab-opt { 
-            padding: 15px; background: rgba(255,255,255,0.05); border: var(--border); 
-            border-radius: 12px; color: #fff; cursor: pointer; text-align: left;
-            font-weight: 600; transition: 0.3s;
+        .engineer {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            margin-top: 0.4rem;
         }
-        .lab-opt.active, .lab-opt:hover { background: var(--primary); color: #000; }
-        #lab-render { height: 600px; border-radius: 30px; border: var(--border); background: radial-gradient(circle, #0a201b, #020a08); overflow: hidden; position: relative; }
 
-        /* Quiz Arena */
-        .quiz-card { background: var(--glass); border: var(--border); border-radius: 30px; padding: 40px; display: grid; grid-template-columns: 2fr 1fr; gap: 40px; }
-        @media (max-width: 1000px) { .quiz-card { grid-template-columns: 1fr; } }
-        .option-btn { 
-            display: block; width: 100%; padding: 20px; margin: 10px 0; 
-            background: rgba(0,0,0,0.5); border: var(--border); border-radius: 15px;
-            color: #fff; text-align: left; cursor: pointer; font-size: 1.1rem;
+        .engineer span {
+            color: var(--primary-accent);
+            font-weight: 700;
+            text-shadow: 0 0 10px var(--accent-glow);
         }
-        .option-btn:hover { border-color: var(--primary); background: rgba(0, 255, 163, 0.05); }
-        .leaderboard { background: rgba(0,0,0,0.3); border-radius: 20px; padding: 20px; }
-        .rank-item { display: flex; justify-content: space-between; padding: 15px; border-bottom: 1px solid rgba(255,255,255,0.1); }
 
-        footer { text-align: center; padding: 60px; border-top: var(--border); margin-top: 100px; }
-        footer h3 { color: var(--primary); letter-spacing: 5px; margin-bottom: 10px; }
+        /* Glassmorphism Card Style */
+        .glass-card {
+            background: var(--card-glass);
+            backdrop-filter: blur(25px);
+            -webkit-backdrop-filter: blur(25px);
+            border: 1px solid var(--border-glass);
+            border-radius: 28px;
+            padding: 2rem;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+            position: relative;
+            overflow: hidden;
+        }
 
-        /* Animations */
-        @keyframes pulse { 0% { opacity: 0.5; } 50% { opacity: 1; } 100% { opacity: 0.5; } }
-        .loading-dots { display: inline-flex; gap: 5px; }
-        .dot { width: 8px; height: 8px; background: var(--primary); border-radius: 50%; animation: pulse 1s infinite; }
+        .glass-card::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, var(--primary-accent), transparent);
+        }
+
+        /* Classy Theme Selector Bar */
+        .theme-bar {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 1rem;
+            margin-top: 1.2rem;
+            flex-wrap: wrap;
+        }
+
+        .theme-dot {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            cursor: pointer;
+            border: 2px solid rgba(255, 255, 255, 0.15);
+            transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275), border-color 0.3s ease;
+        }
+
+        .theme-dot:hover {
+            transform: scale(1.25);
+            border-color: #fff;
+        }
+
+        .dot-gold { background: linear-gradient(135deg, #f5ee6b, #fbbf24); }
+        .dot-blue { background: linear-gradient(135deg, #38bdf8, #0284c7); }
+        .dot-pink { background: linear-gradient(135deg, #f472b6, #db2777); }
+        .dot-green { background: linear-gradient(135deg, #4ade80, #16a34a); }
+        .dot-purple { background: linear-gradient(135deg, #c084fc, #9333ea); }
+        .dot-orange { background: linear-gradient(135deg, #fb923c, #ea580c); }
+
+        /* Year Selector */
+        .selector-group {
+            display: flex;
+            background: rgba(0, 0, 0, 0.3);
+            padding: 6px;
+            border-radius: 18px;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            margin-bottom: 2rem;
+        }
+
+        .select-btn {
+            flex: 1;
+            padding: 14px;
+            border: none;
+            background: transparent;
+            color: var(--text-muted);
+            font-size: 1rem;
+            font-weight: 700;
+            border-radius: 14px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .select-btn.active {
+            background: linear-gradient(135deg, var(--primary-accent), var(--secondary-accent));
+            color: #000;
+            box-shadow: 0 4px 15px var(--accent-glow);
+        }
+
+        /* Countdown Grid */
+        .countdown-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 1.2rem;
+            text-align: center;
+        }
+
+        .time-box {
+            background: rgba(0, 0, 0, 0.25);
+            border: 1px solid var(--border-glass);
+            padding: 1.5rem 0.5rem;
+            border-radius: 20px;
+        }
+
+        .time-val {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 3rem;
+            font-weight: 700;
+            color: var(--primary-accent);
+            line-height: 1;
+        }
+
+        .time-lbl {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            margin-top: 0.6rem;
+        }
+
+        /* Widgets Grid */
+        .widget-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem;
+        }
+
+        @media (max-width: 720px) {
+            .widget-grid { grid-template-columns: 1fr; }
+            .countdown-grid { grid-template-columns: repeat(2, 1fr); }
+            .title { font-size: 2.2rem; }
+        }
+
+        .widget-title {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: var(--text-main);
+            margin-bottom: 1.2rem;
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+        }
+
+        /* Displays & Inputs */
+        .display-digital {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 2.2rem;
+            font-weight: 700;
+            text-align: center;
+            color: #fff;
+            margin: 1rem 0;
+            letter-spacing: 2px;
+        }
+
+        .btn-group {
+            display: flex;
+            gap: 0.6rem;
+        }
+
+        .btn {
+            flex: 1;
+            padding: 12px;
+            border: none;
+            border-radius: 12px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: 0.2s ease;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary-accent), var(--secondary-accent));
+            color: #000;
+            box-shadow: 0 4px 15px var(--accent-glow);
+        }
+
+        .btn-primary:hover { opacity: 0.9; transform: translateY(-1px); }
+
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.08);
+            color: #fff;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .btn-secondary:hover { background: rgba(255, 255, 255, 0.15); }
+
+        .input-style, select {
+            width: 100%;
+            padding: 12px;
+            border-radius: 12px;
+            background: rgba(0, 0, 0, 0.4);
+            border: 1px solid var(--border-glass);
+            color: var(--primary-accent);
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 1.1rem;
+            outline: none;
+            margin-bottom: 0.8rem;
+        }
+
+        select option {
+            background: #0d1117;
+            color: #fff;
+        }
+
+        /* Study Tips */
+        .tips-list {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 0.8rem;
+        }
+
+        .tips-list li {
+            background: rgba(0, 0, 0, 0.2);
+            padding: 1rem;
+            border-radius: 14px;
+            border-left: 3px solid var(--primary-accent);
+            font-size: 0.95rem;
+            line-height: 1.5;
+            color: #e2e8f0;
+        }
+
+        .tips-list strong {
+            color: var(--primary-accent);
+        }
+
+        /* Install Button */
+        .install-btn {
+            width: 100%;
+            padding: 15px;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px dashed var(--primary-accent);
+            color: var(--primary-accent);
+            border-radius: 16px;
+            font-weight: 700;
+            font-size: 1rem;
+            cursor: pointer;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 0.6rem;
+            transition: 0.3s ease;
+        }
+
+        .install-btn:hover {
+            background: rgba(255, 255, 255, 0.08);
+            box-shadow: 0 0 20px var(--accent-glow);
+        }
     </style>
 </head>
-<body>
+<body class="theme-gold">
 
-<nav>
-    <a href="#hero">Terminal</a>
-    <a href="#ai">Achi-Core AI</a>
-    <a href="#lab">3D Lab</a>
-    <a href="#quiz">Arena</a>
-</nav>
+    <div class="container">
+        <!-- Header -->
+        <header>
+            <h1 class="title">Bio Alchemist A/L</h1>
+            <div class="engineer">ENGINEERED BY <span>SHADOW</span></div>
+            
+            <!-- Clean Classy Theme Selector -->
+            <div class="theme-bar">
+                <div class="theme-dot dot-gold" onclick="changeTheme('theme-gold')" title="Cheese Gold"></div>
+                <div class="theme-dot dot-blue" onclick="changeTheme('theme-skyblue')" title="Sky Blue"></div>
+                <div class="theme-dot dot-pink" onclick="changeTheme('theme-neonpink')" title="Neon Pink"></div>
+                <div class="theme-dot dot-green" onclick="changeTheme('theme-green')" title="Electric Green"></div>
+                <div class="theme-dot dot-purple" onclick="changeTheme('theme-purple')" title="Royal Purple"></div>
+                <div class="theme-dot dot-orange" onclick="changeTheme('theme-orange')" title="Solar Orange"></div>
+            </div>
+        </header>
 
-<section id="hero">
-    <canvas id="hero-canvas"></canvas>
-    <div class="hero-content">
-        <h1>BIO-NEXUS</h1>
-        <p>Premium Biology Intelligence</p>
-        <div class="badge-main">
-            <i class="fa-solid fa-bolt"></i> Engineered by Achintha Nirmana | 2028 A/L Batch
-        </div>
-    </div>
-</section>
+        <!-- Main Countdown Widget -->
+        <div class="glass-card">
+            <div class="selector-group">
+                <button class="select-btn active" onclick="setTarget('2027')">2027 A/L Target</button>
+                <button class="select-btn" onclick="setTarget('2028')">2028 A/L Target</button>
+            </div>
 
-<div class="container" id="ai">
-    <div class="section-header">
-        <h2>Achi-Core Intelligence v6.0</h2>
-        <p>Advanced RAG Engine for Sri Lankan A/L Students</p>
-    </div>
-    <div class="ai-wrap">
-        <div id="ai-display">
-            <div class="msg msg-ai">
-                <b>[SYSTEM ONLINE]</b> සාදරයෙන් පිළිගන්නවා. මම <b>Achi-Core AI</b>. ඔයාට ඕනෑම Biology ගැටලුවක් මෙතන අහන්න පුළුවන්. මම ගැඹුරු විස්තරයක් ලබා දෙන්නම්.
+            <div class="countdown-grid">
+                <div class="time-box"><div class="time-val" id="days">00</div><div class="time-lbl">දින (Days)</div></div>
+                <div class="time-box"><div class="time-val" id="hours">00</div><div class="time-lbl">පැය (Hours)</div></div>
+                <div class="time-box"><div class="time-val" id="minutes">00</div><div class="time-lbl">මිනිත්තු (Mins)</div></div>
+                <div class="time-box"><div class="time-val" id="seconds">00</div><div class="time-lbl">තත්පර (Secs)</div></div>
             </div>
         </div>
-        <div class="input-bar">
-            <input type="text" id="ai-input" placeholder="ඔයාට දැනගන්න ඕනේ මොකක් ගැනද? (e.g. ද්විත්ව සංසරණය, සෛල විභජනය)..." onkeypress="if(event.key === 'Enter') askAchiCore()">
-            <button class="send-btn" onclick="askAchiCore()">PROCESS</button>
-        </div>
-    </div>
-</div>
 
-<div class="container" id="lab">
-    <div class="section-header">
-        <h2>Ultra 3D Lab</h2>
-        <p>Interactive Molecular Visualization</p>
-    </div>
-    <div class="lab-grid">
-        <div class="lab-menu">
-            <button class="lab-opt active" onclick="loadBioModel('dna', this)">🧬 DNA Helix</button>
-            <button class="lab-opt" onclick="loadBioModel('cell', this)">🦠 Animal Cell</button>
-            <button class="lab-opt" onclick="loadBioModel('heart', this)">🫀 Human Heart</button>
-            <button class="lab-opt" onclick="loadBioModel('virus', this)">👾 Bacteriophage</button>
-            <button class="lab-opt" onclick="loadBioModel('neuron', this)">⚡ Nerve Cell</button>
-        </div>
-        <div id="lab-render">
-            <div style="position:absolute; bottom:20px; left:20px; z-index:10; font-size:0.8rem; opacity:0.6;">
-                <i class="fa-solid fa-arrows-up-down-left-right"></i> DRAG TO ROTATE | SCROLL TO ZOOM
+        <!-- Middle Tools Grid -->
+        <div class="widget-grid">
+            <!-- Study Stopwatch -->
+            <div class="glass-card">
+                <div class="widget-title">⏱️ Study Session Timer</div>
+                <div class="display-digital" id="sw-display">00:00:00</div>
+                <div class="btn-group">
+                    <button class="btn btn-primary" id="sw-start" onclick="toggleStopwatch()">Start Session</button>
+                    <button class="btn btn-secondary" onclick="resetStopwatch()">Reset</button>
+                </div>
+            </div>
+
+            <!-- Alarm System -->
+            <div class="glass-card">
+                <div class="widget-title">🔔 Alchemist Study Alarm</div>
+                <input type="time" id="alarm-time" class="input-style">
+                <select id="alarm-sound-type">
+                    <option value="cinematic">🎼 Sound: Cinematic Power Chime</option>
+                    <option value="digital">⏰ Sound: Modern Digital Beep</option>
+                    <option value="heavy">🚨 Sound: Heavy Siren Alarm</option>
+                    <option value="soft">🔔 Sound: Soft Zen Bell</option>
+                </select>
+                <div class="btn-group">
+                    <button class="btn btn-primary" onclick="setAlarm()">Set Alarm</button>
+                    <button class="btn btn-secondary" onclick="testSound()">Test Sound</button>
+                </div>
+                <p id="alarm-status" style="font-size: 0.85rem; color: var(--primary-accent); margin-top: 0.8rem; text-align: center; font-weight: 600;"></p>
             </div>
         </div>
-    </div>
-</div>
 
-<div class="container" id="quiz">
-    <div class="section-header">
-        <h2>The Bio Arena</h2>
-        <p>Live Competition - Firebase Powered</p>
-    </div>
-    <div class="quiz-card">
-        <div id="quiz-main">
-            <div id="quiz-init">
-                <h2 style="margin-bottom:20px;">අද තරඟයට සූදානම්ද?</h2>
-                <input type="text" id="player-name" placeholder="Enter Your Name..." style="margin-bottom:20px; width:100%;">
-                <button class="send-btn" style="width:100%; padding:20px;" onclick="startArena()">ENTER ARENA</button>
-            </div>
-            <div id="quiz-play" style="display:none;">
-                <h3 id="q-text" style="font-size:1.5rem; margin-bottom:30px;"></h3>
-                <div id="q-options"></div>
-            </div>
+        <!-- Classy Study Tips Section -->
+        <div class="glass-card">
+            <div class="widget-title">💡 Bio Alchemist Mastery Tips</div>
+            <ul class="tips-list">
+                <li><strong>Pomodoro Technique:</strong> විනාඩි 25ක් කිසිම distraction එකක් නැතුව පාඩම් කරලා විනාඩි 5ක short break එකක් ගන්න. මොළයේ retainability එක උපරිම වෙනවා.</li>
+                <li><strong>Active Recall & Spaced Repetition:</strong> නිකම්ම කියවන්නේ නැතුව, පාඩම් කරපු දේ කොළයක ලියලා හෝ තමන්ටම තේරුම් කරලා බලන්න. දින 1, 3, 7 ආකාරයට revision කරන්න.</li>
+                <li><strong>Bio Diagram Practice:</strong> Bio රූප සටහන් නිතරම අඳින්න. Labeling හරියට මතක තියාගන්න. A/L ලකුණු වැඩි කරගන්න හොඳම ක්‍රමයයි.</li>
+                <li><strong>Past Papers Practice:</strong> Countdown එක දිහා බල බලා බය වෙන්න එපා! දිනපතා අවම Essay 1ක් හෝ MCQ 20ක් වෙලාවට කරලා mark කරගන්න.</li>
+            </ul>
         </div>
-        <div class="leaderboard">
-            <h3 style="color:var(--primary); margin-bottom:20px;"><i class="fa-solid fa-trophy"></i> LEADERBOARD</h3>
-            <div id="lb-list">
-                <div class="rank-item"><span>Connecting...</span></div>
-            </div>
-        </div>
+
+        <!-- Add to Home Screen Button -->
+        <button class="install-btn" id="install-btn" onclick="installPWA()">
+            📲 Add Bio Alchemist to Home Screen
+        </button>
     </div>
-</div>
 
-<footer>
-    <h3>BIO-NEXUS TERMINAL v6.0</h3>
-    <p>Hand-crafted with ❤️ by <b>Achintha Nirmana</b></p>
-    <p style="opacity:0.5; font-size:0.8rem; margin-top:10px;">Future Astrobiologist | 2028 A/L Biology Batch Sri Lanka</p>
-</footer>
+    <script>
+        // --- Theme Switcher ---
+        function changeTheme(themeName) {
+            document.body.className = themeName;
+        }
 
-<script>
-// --- HERO DNA ANIMATION (PRO LEVEL) ---
-let heroScene, heroCam, heroRenderer, dnaGroup;
-
-function initHero() {
-    const canvas = document.getElementById('hero-canvas');
-    heroScene = new THREE.Scene();
-    heroCam = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-    heroRenderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true });
-    heroRenderer.setSize(window.innerWidth, window.innerHeight);
-    
-    dnaGroup = new THREE.Group();
-    const sphereGeo = new THREE.SphereGeometry(0.3, 16, 16);
-    const blueMat = new THREE.MeshPhongMaterial({ color: 0x00ffa3, emissive: 0x00ffa3, emissiveIntensity: 0.5 });
-    const whiteMat = new THREE.MeshPhongMaterial({ color: 0xffffff });
-
-    for(let i=0; i<40; i++) {
-        const y = (i * 0.5) - 10;
-        const angle = i * 0.4;
-        
-        const s1 = new THREE.Mesh(sphereGeo, blueMat);
-        s1.position.set(Math.cos(angle)*4, y, Math.sin(angle)*4);
-        
-        const s2 = new THREE.Mesh(sphereGeo, blueMat);
-        s2.position.set(Math.cos(angle + Math.PI)*4, y, Math.sin(angle + Math.PI)*4);
-        
-        const lineGeo = new THREE.CylinderGeometry(0.05, 0.05, 8);
-        const line = new THREE.Mesh(lineGeo, whiteMat);
-        line.rotation.z = Math.PI/2;
-        line.rotation.y = -angle;
-        line.position.y = y;
-        
-        dnaGroup.add(s1, s2, line);
-    }
-    
-    heroScene.add(dnaGroup);
-    const light = new THREE.PointLight(0xffffff, 1, 100);
-    light.position.set(10, 10, 10);
-    heroScene.add(light, new THREE.AmbientLight(0x404040));
-    
-    heroCam.position.z = 15;
-    
-    function animate() {
-        requestAnimationFrame(animate);
-        dnaGroup.rotation.y += 0.01;
-        dnaGroup.rotation.x = Math.sin(Date.now() * 0.001) * 0.2;
-        heroRenderer.render(heroScene, heroCam);
-    }
-    animate();
-}
-
-// --- ACHI-CORE AI v6.0 (SMART ENGINE) ---
-async function askAchiCore() {
-    const input = document.getElementById('ai-input');
-    const display = document.getElementById('ai-display');
-    const query = input.value.trim();
-    if(!query) return;
-
-    // User Message
-    const userMsg = document.createElement('div');
-    userMsg.className = 'msg msg-user';
-    userMsg.innerHTML = `<b>ඔබ:</b> ${query}`;
-    display.appendChild(userMsg);
-    input.value = '';
-    display.scrollTop = display.scrollHeight;
-
-    // Typing
-    const aiMsg = document.createElement('div');
-    aiMsg.className = 'msg msg-ai';
-    aiMsg.innerHTML = `<b>Achi-Core:</b> <div class="loading-dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div>`;
-    display.appendChild(aiMsg);
-
-    // AI Logic (Simulated Advanced Fetch)
-    setTimeout(async () => {
-        // මේක ඇතුලේ ඔයාට Gemini API එක connect කරන්න පුළුවන්
-        // දැනට මම මේක "Smart Mode" එකට හැදුවා
-        const response = await fetchKnowledge(query);
-        aiMsg.innerHTML = `<b>Achi-Core:</b><br><br>${response}`;
-        display.scrollTop = display.scrollHeight;
-    }, 1500);
-}
-
-async function fetchKnowledge(q) {
-    // Wikipedia + Bio-Dictionary Simulation
-    // Real-world එකේදී මේකට API එකක් link කරන්න පුළුවන්
-    return `"${q}" පිළිබඳව මාගේ දත්ත පද්ධතිය පරීක්ෂා කළා. මේ පිළිබඳව 2028 A/L විෂය නිර්දේශයට අනුව වැදගත් කරුණු මෙන්න: 
-    <br><br>1. මෙහි මූලික ව්‍යුහය ඉතා සංකීර්ණ වන අතර එය ජෛව රසායනික ක්‍රියාවලීන් මත රඳා පවතී. 
-    <br>2. ශ්‍රී ලංකාවේ විභාග රටාවට අනුව මෙහි රූප සටහන් ඇඳීම ඉතා වැදගත් වේ. 
-    <br>3. මෙය සෛලීය මට්ටමේදී ශක්තිය නිපදවීමට හෝ තොරතුරු ගබඩා කිරීමට දායක වේ.
-    <br><br>වැඩිදුර විස්තර සඳහා පෙළ පොතේ 4 වන ඒකකය පරිශීලනය කරන්න. මම තව දුරටත් මේ ගැන සොයා බලන්නද?`;
-}
-
-// --- 3D LAB ENGINE ---
-let labScene, labCam, labRenderer, labControls, currentObj;
-
-function initLab() {
-    const container = document.getElementById('lab-render');
-    labScene = new THREE.Scene();
-    labCam = new THREE.PerspectiveCamera(50, container.clientWidth / container.clientHeight, 0.1, 1000);
-    labRenderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
-    labRenderer.setSize(container.clientWidth, container.clientHeight);
-    container.appendChild(labRenderer.domElement);
-    
-    labControls = new THREE.OrbitControls(labCam, labRenderer.domElement);
-    labCam.position.z = 10;
-    
-    const hLight = new THREE.HemisphereLight(0xffffff, 0x000000, 1);
-    labScene.add(hLight);
-
-    function animate() {
-        requestAnimationFrame(animate);
-        if(currentObj) currentObj.rotation.y += 0.005;
-        labControls.update();
-        labRenderer.render(labScene, labCam);
-    }
-    animate();
-}
-
-function loadBioModel(type, btn) {
-    document.querySelectorAll('.lab-opt').forEach(b => b.classList.remove('active'));
-    btn.classList.add('active');
-    
-    if(currentObj) labScene.remove(currentObj);
-    currentObj = new THREE.Group();
-    
-    const mat = new THREE.MeshStandardMaterial({ color: 0x00ffa3, wireframe: true });
-    
-    if(type === 'dna') {
-        const geo = new THREE.TorusKnotGeometry(2, 0.5, 100, 16);
-        currentObj.add(new THREE.Mesh(geo, mat));
-    } else if(type === 'cell') {
-        const geo = new THREE.SphereGeometry(3, 32, 32);
-        currentObj.add(new THREE.Mesh(geo, mat));
-    } else if(type === 'heart') {
-        const geo = new THREE.IcosahedronGeometry(3, 1);
-        currentObj.add(new THREE.Mesh(geo, mat));
-    } else {
-        const geo = new THREE.OctahedronGeometry(3, 0);
-        currentObj.add(new THREE.Mesh(geo, mat));
-    }
-    
-    labScene.add(currentObj);
-}
-
-// --- ARENA LOGIC ---
-let score = 0;
-const questions = [
-    { q: "මානව සෛලයක ඇති වර්ණදේහ සංඛ්‍යාව කීයද?", a: ["23", "46", "44", "48"], c: 1 },
-    { q: "ප්‍රභාසංස්ලේෂණයේදී පිටවන වායුව කුමක්ද?", a: ["CO2", "N2", "O2", "H2"], c: 2 }
-];
-
-function startArena() {
-    const name = document.getElementById('player-name').value;
-    if(!name) return alert("Please enter your name!");
-    document.getElementById('quiz-init').style.display = 'none';
-    document.getElementById('quiz-play').style.display = 'block';
-    showQuestion(0);
-}
-
-function showQuestion(idx) {
-    if(idx >= questions.length) {
-        document.getElementById('quiz-play').innerHTML = `<h2>තරඟය අවසන්! Score: ${score}</h2>`;
-        confetti();
-        return;
-    }
-    const q = questions[idx];
-    document.getElementById('q-text').innerText = q.q;
-    const optDiv = document.getElementById('q-options');
-    optDiv.innerHTML = '';
-    q.a.forEach((opt, i) => {
-        const b = document.createElement('button');
-        b.className = 'option-btn';
-        b.innerText = opt;
-        b.onclick = () => {
-            if(i === q.c) score += 10;
-            showQuestion(idx + 1);
+        // --- Countdown Dates ---
+        const targets = {
+            '2027': new Date('November 25, 2027 08:30:00').getTime(),
+            '2028': new Date('November 25, 2028 08:30:00').getTime()
         };
-        optDiv.appendChild(b);
-    });
-}
+        let currentTarget = '2027';
 
-// --- INIT ALL ---
-window.onload = () => {
-    initHero();
-    initLab();
-    loadBioModel('dna', document.querySelector('.lab-opt.active'));
-    
-    // Simulate Leaderboard
-    const lb = document.getElementById('lb-list');
-    lb.innerHTML = `
-        <div class="rank-item"><span>1. Achintha</span><span>2500</span></div>
-        <div class="rank-item"><span>2. Sarasi</span><span>2450</span></div>
-        <div class="rank-item"><span>3. Nuwan</span><span>2100</span></div>
-    `;
-};
+        function setTarget(year) {
+            currentTarget = year;
+            document.querySelectorAll('.select-btn').forEach(btn => {
+                btn.classList.toggle('active', btn.innerText.includes(year));
+            });
+            updateCountdown();
+        }
 
-window.onresize = () => {
-    heroCam.aspect = window.innerWidth / window.innerHeight;
-    heroCam.updateProjectionMatrix();
-    heroRenderer.setSize(window.innerWidth, window.innerHeight);
-};
-</script>
+        function updateCountdown() {
+            const now = new Date().getTime();
+            const diff = targets[currentTarget] - now;
 
+            if (diff > 0) {
+                document.getElementById('days').innerText = Math.floor(diff / (1000 * 60 * 60 * 24)).toString().padStart(2, '0');
+                document.getElementById('hours').innerText = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)).toString().padStart(2, '0');
+                document.getElementById('minutes').innerText = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60)).toString().padStart(2, '0');
+                document.getElementById('seconds').innerText = Math.floor((diff % (1000 * 60)) / 1000).toString().padStart(2, '0');
+            }
+        }
+        setInterval(updateCountdown, 1000);
+
+        // --- Stopwatch Logic ---
+        let swInterval = null;
+        let swSeconds = 0;
+
+        function toggleStopwatch() {
+            const btn = document.getElementById('sw-start');
+            if (swInterval) {
+                clearInterval(swInterval);
+                swInterval = null;
+                btn.innerText = 'Start Session';
+            } else {
+                swInterval = setInterval(() => {
+                    swSeconds++;
+                    const hrs = Math.floor(swSeconds / 3600).toString().padStart(2, '0');
+                    const mins = Math.floor((swSeconds % 3600) / 60).toString().padStart(2, '0');
+                    const secs = (swSeconds % 60).toString().padStart(2, '0');
+                    document.getElementById('sw-display').innerText = `${hrs}:${mins}:${secs}`;
+                }, 1000);
+                btn.innerText = 'Pause';
+            }
+        }
+
+        function resetStopwatch() {
+            clearInterval(swInterval);
+            swInterval = null;
+            swSeconds = 0;
+            document.getElementById('sw-display').innerText = '00:00:00';
+            document.getElementById('sw-start').innerText = 'Start Session';
+        }
+
+        // --- Advanced Audio Synthesis Engine (Multiple Sound Effects) ---
+        let audioCtx = null;
+
+        function initAudio() {
+            if (!audioCtx) {
+                audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            }
+            if (audioCtx.state === 'suspended') {
+                audioCtx.resume();
+            }
+        }
+
+        function playSelectedSound() {
+            initAudio();
+            const type = document.getElementById('alarm-sound-type').value;
+
+            if (type === 'cinematic') {
+                const chords = [[261.63, 329.63, 392.00], [329.63, 392.00, 493.88], [349.23, 440.00, 523.25]];
+                let st = audioCtx.currentTime;
+                for (let i = 0; i < 6; i++) {
+                    chords[i % chords.length].forEach(f => {
+                        const osc = audioCtx.createOscillator();
+                        const gain = audioCtx.createGain();
+                        osc.type = 'sawtooth';
+                        osc.frequency.setValueAtTime(f, st);
+                        gain.gain.setValueAtTime(0.12, st);
+                        gain.gain.exponentialRampToValueAtTime(0.0001, st + 1.2);
+                        osc.connect(gain); gain.connect(audioCtx.destination);
+                        osc.start(st); osc.stop(st + 1.2);
+                    });
+                    st += 1.5;
+                }
+            } else if (type === 'digital') {
+                let st = audioCtx.currentTime;
+                for (let i = 0; i < 15; i++) {
+                    const osc = audioCtx.createOscillator();
+                    const gain = audioCtx.createGain();
+                    osc.type = 'square';
+                    osc.frequency.setValueAtTime(1046.50, st);
+                    gain.gain.setValueAtTime(0.15, st);
+                    gain.gain.setValueAtTime(0, st + 0.1);
+                    osc.connect(gain); gain.connect(audioCtx.destination);
+                    osc.start(st); osc.stop(st + 0.1);
+                    st += 0.25;
+                }
+            } else if (type === 'heavy') {
+                let st = audioCtx.currentTime;
+                for (let i = 0; i < 8; i++) {
+                    const osc = audioCtx.createOscillator();
+                    const gain = audioCtx.createGain();
+                    osc.type = 'sawtooth';
+                    osc.frequency.setValueAtTime(440, st);
+                    osc.frequency.linearRampToValueAtTime(880, st + 0.4);
+                    gain.gain.setValueAtTime(0.2, st);
+                    gain.gain.exponentialRampToValueAtTime(0.0001, st + 0.5);
+                    osc.connect(gain); gain.connect(audioCtx.destination);
+                    osc.start(st); osc.stop(st + 0.5);
+                    st += 0.6;
+                }
+            } else if (type === 'soft') {
+                let st = audioCtx.currentTime;
+                const notes = [523.25, 659.25, 783.99, 1046.50];
+                for (let i = 0; i < 5; i++) {
+                    notes.forEach((f, idx) => {
+                        const osc = audioCtx.createOscillator();
+                        const gain = audioCtx.createGain();
+                        osc.type = 'sine';
+                        osc.frequency.setValueAtTime(f, st + idx * 0.15);
+                        gain.gain.setValueAtTime(0.15, st + idx * 0.15);
+                        gain.gain.exponentialRampToValueAtTime(0.0001, st + idx * 0.15 + 0.8);
+                        osc.connect(gain); gain.connect(audioCtx.destination);
+                        osc.start(st + idx * 0.15); osc.stop(st + idx * 0.15 + 0.8);
+                    });
+                    st += 1.2;
+                }
+            }
+        }
+
+        function testSound() {
+            playSelectedSound();
+        }
+
+        // --- Alarm Logic ---
+        let alarmTime = null;
+        let alarmInterval = null;
+
+        function setAlarm() {
+            initAudio();
+            const val = document.getElementById('alarm-time').value;
+            if (!val) return;
+            
+            alarmTime = val;
+            document.getElementById('alarm-status').innerText = `🔔 Alarm active for ${alarmTime}`;
+            
+            if (alarmInterval) clearInterval(alarmInterval);
+            alarmInterval = setInterval(() => {
+                const now = new Date();
+                const currentTime = now.getHours().toString().padStart(2, '0') + ":" + now.getMinutes().toString().padStart(2, '0');
+                if (alarmTime === currentTime && now.getSeconds() === 0) {
+                    playSelectedSound();
+                    setTimeout(() => {
+                        alert('⏰ TIME TO STUDY! Bio Alchemist Session Started!');
+                    }, 500);
+                    clearAlarm();
+                }
+            }, 1000);
+        }
+
+        function clearAlarm() {
+            alarmTime = null;
+            if (alarmInterval) clearInterval(alarmInterval);
+            document.getElementById('alarm-status').innerText = '';
+            document.getElementById('alarm-time').value = '';
+        }
+
+        // --- PWA Installation Logic ---
+        let deferredPrompt;
+        window.addEventListener('beforeinstallprompt', (e) => {
+            e.preventDefault();
+            deferredPrompt = e;
+            document.getElementById('install-btn').style.display = 'flex';
+        });
+
+        function installPWA() {
+            if (deferredPrompt) {
+                deferredPrompt.prompt();
+                deferredPrompt.userChoice.then(() => {
+                    deferredPrompt = null;
+                });
+            } else {
+                alert('මචං, Browser Menu (⋮ or Share) එකට ගිහින් "Add to Home Screen" තෝරන්න!');
+            }
+        }
+
+        // Initial Load
+        updateCountdown();
+    </script>
 </body>
-    </html>
+</html>
