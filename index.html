@@ -9,7 +9,7 @@
     <link rel="manifest" href='data:application/json,{"name":"Bio Alchemist A/L","short_name":"BioAlchemist","start_url":".","display":"standalone","background_color":"#07090e","theme_color":"#07090e"}'>
     <meta name="theme-color" content="#07090e">
     
-    <!-- Google Fonts with System Fallbacks for Offline Mode -->
+    <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
     
     <style>
@@ -23,58 +23,38 @@
             --accent-glow: rgba(245, 238, 107, 0.25);
             --text-main: #f8fafc;
             --text-muted: #a0aec0;
+            --egg-yolk: #ffb703;
         }
 
         body.theme-skyblue {
-            --bg-deep: #06111e;
-            --card-glass: rgba(13, 29, 49, 0.75);
-            --border-glass: rgba(56, 189, 248, 0.2);
-            --primary-accent: #38bdf8;
-            --secondary-accent: #0284c7;
-            --accent-glow: rgba(56, 189, 248, 0.25);
+            --bg-deep: #06111e; --card-glass: rgba(13, 29, 49, 0.75);
+            --border-glass: rgba(56, 189, 248, 0.2); --primary-accent: #38bdf8;
+            --secondary-accent: #0284c7; --accent-glow: rgba(56, 189, 248, 0.25);
         }
-
         body.theme-neonpink {
-            --bg-deep: #140712;
-            --card-glass: rgba(35, 15, 31, 0.75);
-            --border-glass: rgba(244, 114, 182, 0.2);
-            --primary-accent: #f472b6;
-            --secondary-accent: #db2777;
-            --accent-glow: rgba(244, 114, 182, 0.25);
+            --bg-deep: #140712; --card-glass: rgba(35, 15, 31, 0.75);
+            --border-glass: rgba(244, 114, 182, 0.2); --primary-accent: #f472b6;
+            --secondary-accent: #db2777; --accent-glow: rgba(244, 114, 182, 0.25);
         }
-
         body.theme-green {
-            --bg-deep: #05160a;
-            --card-glass: rgba(12, 35, 18, 0.75);
-            --border-glass: rgba(74, 222, 128, 0.2);
-            --primary-accent: #4ade80;
-            --secondary-accent: #16a34a;
-            --accent-glow: rgba(74, 222, 128, 0.25);
+            --bg-deep: #05160a; --card-glass: rgba(12, 35, 18, 0.75);
+            --border-glass: rgba(74, 222, 128, 0.2); --primary-accent: #4ade80;
+            --secondary-accent: #16a34a; --accent-glow: rgba(74, 222, 128, 0.25);
         }
-
         body.theme-purple {
-            --bg-deep: #0f071a;
-            --card-glass: rgba(26, 15, 42, 0.75);
-            --border-glass: rgba(192, 132, 252, 0.2);
-            --primary-accent: #c084fc;
-            --secondary-accent: #9333ea;
-            --accent-glow: rgba(192, 132, 252, 0.25);
+            --bg-deep: #0f071a; --card-glass: rgba(26, 15, 42, 0.75);
+            --border-glass: rgba(192, 132, 252, 0.2); --primary-accent: #c084fc;
+            --secondary-accent: #9333ea; --accent-glow: rgba(192, 132, 252, 0.25);
         }
-
         body.theme-orange {
-            --bg-deep: #190b07;
-            --card-glass: rgba(43, 20, 13, 0.75);
-            --border-glass: rgba(251, 146, 60, 0.2);
-            --primary-accent: #fb923c;
-            --secondary-accent: #ea580c;
-            --accent-glow: rgba(251, 146, 60, 0.25);
+            --bg-deep: #190b07; --card-glass: rgba(43, 20, 13, 0.75);
+            --border-glass: rgba(251, 146, 60, 0.2); --primary-accent: #fb923c;
+            --secondary-accent: #ea580c; --accent-glow: rgba(251, 146, 60, 0.25);
         }
 
         * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-            font-family: 'Outfit', -apple-system, BlinkMacSystemFont, sans-serif;
+            box-sizing: border-box; margin: 0; padding: 0;
+            font-family: 'Outfit', -apple-system, sans-serif;
             -webkit-tap-highlight-color: transparent;
             transition: background-color 0.4s ease, border-color 0.4s ease, color 0.4s ease;
         }
@@ -86,89 +66,49 @@
                 radial-gradient(circle at 80% 80%, var(--accent-glow) 0%, transparent 45%);
             color: var(--text-main);
             min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            padding: 2.5rem 1rem;
-            overflow-x: hidden;
+            display: flex; flex-direction: column; align-items: center;
+            padding: 2.5rem 1rem; overflow-x: hidden;
         }
 
         .container {
-            width: 100%;
-            max-width: 850px;
-            display: flex;
-            flex-direction: column;
-            gap: 2rem;
-            z-index: 2;
+            width: 100%; max-width: 850px; display: flex; flex-direction: column;
+            gap: 2rem; z-index: 2;
         }
 
         header { text-align: center; position: relative; }
 
         .title {
-            font-family: 'Space Grotesk', sans-serif;
-            font-size: 2.8rem;
-            font-weight: 800;
+            font-family: 'Space Grotesk', sans-serif; font-size: 2.8rem; font-weight: 800;
             background: linear-gradient(135deg, #ffffff 20%, var(--primary-accent) 70%, var(--secondary-accent) 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            letter-spacing: -1px;
-            text-shadow: 0 0 25px var(--accent-glow);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+            letter-spacing: -1px; text-shadow: 0 0 25px var(--accent-glow);
         }
 
         .engineer {
-            font-size: 0.85rem;
-            color: var(--text-muted);
-            letter-spacing: 3px;
-            text-transform: uppercase;
-            margin-top: 0.4rem;
+            font-size: 0.85rem; color: var(--text-muted); letter-spacing: 3px;
+            text-transform: uppercase; margin-top: 0.4rem;
         }
-
-        .engineer span {
-            color: var(--primary-accent);
-            font-weight: 700;
-            text-shadow: 0 0 10px var(--accent-glow);
-        }
+        .engineer span { color: var(--primary-accent); font-weight: 700; }
 
         .glass-card {
-            background: var(--card-glass);
-            backdrop-filter: blur(25px);
+            background: var(--card-glass); backdrop-filter: blur(25px);
             -webkit-backdrop-filter: blur(25px);
-            border: 1px solid var(--border-glass);
-            border-radius: 28px;
-            padding: 2rem;
-            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
-            position: relative;
-            overflow: hidden;
-        }
-
-        .glass-card::before {
-            content: '';
-            position: absolute;
-            top: 0; left: 0; right: 0;
-            height: 1px;
-            background: linear-gradient(90deg, transparent, var(--primary-accent), transparent);
+            border: 1px solid var(--border-glass); border-radius: 28px;
+            padding: 2rem; box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+            position: relative; overflow: hidden;
         }
 
         .theme-bar {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            gap: 1rem;
-            margin-top: 1.2rem;
-            flex-wrap: wrap;
+            display: flex; justify-content: center; align-items: center;
+            gap: 1rem; margin-top: 1.2rem; flex-wrap: wrap;
         }
 
         .theme-dot {
-            width: 28px;
-            height: 28px;
-            border-radius: 50%;
-            cursor: pointer;
+            width: 28px; height: 28px; border-radius: 50%; cursor: pointer;
             border: 2px solid rgba(255, 255, 255, 0.15);
-            transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275), border-color 0.3s ease;
+            transition: transform 0.3s ease, border-color 0.3s ease;
         }
-
         .theme-dot:hover { transform: scale(1.25); border-color: #fff; }
-
         .dot-gold { background: linear-gradient(135deg, #f5ee6b, #fbbf24); }
         .dot-blue { background: linear-gradient(135deg, #38bdf8, #0284c7); }
         .dot-pink { background: linear-gradient(135deg, #f472b6, #db2777); }
@@ -177,68 +117,98 @@
         .dot-orange { background: linear-gradient(135deg, #fb923c, #ea580c); }
 
         .selector-group {
-            display: flex;
-            background: rgba(0, 0, 0, 0.3);
-            padding: 6px;
-            border-radius: 18px;
-            border: 1px solid rgba(255, 255, 255, 0.08);
+            display: flex; background: rgba(0, 0, 0, 0.3); padding: 6px;
+            border-radius: 18px; border: 1px solid rgba(255, 255, 255, 0.08);
             margin-bottom: 2rem;
         }
 
         .select-btn {
-            flex: 1;
-            padding: 14px;
-            border: none;
-            background: transparent;
-            color: var(--text-muted);
-            font-size: 1rem;
-            font-weight: 700;
-            border-radius: 14px;
-            cursor: pointer;
-            transition: all 0.3s ease;
+            flex: 1; padding: 14px; border: none; background: transparent;
+            color: var(--text-muted); font-size: 1rem; font-weight: 700;
+            border-radius: 14px; cursor: pointer; transition: all 0.3s ease;
         }
 
         .select-btn.active {
             background: linear-gradient(135deg, var(--primary-accent), var(--secondary-accent));
-            color: #000;
-            box-shadow: 0 4px 15px var(--accent-glow);
+            color: #000; box-shadow: 0 4px 15px var(--accent-glow);
         }
 
+        /* --- REALISTIC 3D EGG CONTAINER & ANIMATION --- */
+        .egg-progress-wrapper {
+            display: flex; flex-direction: column; align-items: center;
+            margin-bottom: 2rem;
+        }
+
+        .egg-container {
+            width: 140px; height: 180px; position: relative;
+            margin-bottom: 1.2rem;
+            filter: drop-shadow(0 20px 25px rgba(0,0,0,0.65));
+            animation: floatEgg 4s ease-in-out infinite;
+        }
+
+        @keyframes floatEgg {
+            0%, 100% { transform: translateY(0) rotate(0deg); }
+            50% { transform: translateY(-8px) rotate(1deg); }
+        }
+
+        .egg-svg {
+            width: 100%; height: 100%;
+        }
+
+        /* Crack Animations */
+        .egg-crack { 
+            stroke: #2b1f1d; stroke-width: 2.5; stroke-linecap: round; stroke-linejoin: round; fill: none; 
+            stroke-dasharray: 200; stroke-dashoffset: 200;
+            transition: stroke-dashoffset 1.2s cubic-bezier(0.4, 0, 0.2, 1);
+            filter: drop-shadow(1px 1px 1px rgba(255,255,255,0.6));
+        }
+
+        /* Progress Bar */
+        .progress-container {
+            width: 100%; max-width: 420px; background: rgba(0,0,0,0.5);
+            border-radius: 20px; height: 26px; border: 1px solid var(--border-glass);
+            position: relative; overflow: hidden;
+            box-shadow: inset 0 2px 6px rgba(0,0,0,0.6);
+        }
+
+        .progress-fill {
+            height: 100%; background: linear-gradient(90deg, var(--primary-accent), var(--secondary-accent));
+            width: 0%; transition: width 0.8s ease-in-out;
+            position: relative; overflow: hidden;
+        }
+        
+        .progress-fill::after {
+            content: ''; position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.5), transparent);
+            transform: translateX(-100%); animation: shimmer 2s infinite;
+        }
+
+        @keyframes shimmer { 100% { transform: translateX(100%); } }
+
+        .progress-text {
+            position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+            font-size: 0.85rem; font-weight: 800; color: #fff; text-shadow: 0 1px 4px #000;
+            letter-spacing: 1px;
+        }
+
+        /* Countdown Grid */
         .countdown-grid {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 1.2rem;
-            text-align: center;
+            display: grid; grid-template-columns: repeat(4, 1fr); gap: 1.2rem; text-align: center;
         }
-
         .time-box {
-            background: rgba(0, 0, 0, 0.25);
-            border: 1px solid var(--border-glass);
-            padding: 1.5rem 0.5rem;
-            border-radius: 20px;
+            background: rgba(0, 0, 0, 0.25); border: 1px solid var(--border-glass);
+            padding: 1.5rem 0.5rem; border-radius: 20px;
         }
-
         .time-val {
-            font-family: 'Space Grotesk', sans-serif;
-            font-size: 3rem;
-            font-weight: 700;
-            color: var(--primary-accent);
-            line-height: 1;
+            font-family: 'Space Grotesk', sans-serif; font-size: 3rem; font-weight: 700;
+            color: var(--primary-accent); line-height: 1;
         }
-
         .time-lbl {
-            font-size: 0.8rem;
-            color: var(--text-muted);
-            text-transform: uppercase;
-            letter-spacing: 1.5px;
-            margin-top: 0.6rem;
+            font-size: 0.8rem; color: var(--text-muted); text-transform: uppercase;
+            letter-spacing: 1.5px; margin-top: 0.6rem;
         }
 
-        .widget-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 1.5rem;
-        }
+        .widget-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; }
 
         @media (max-width: 720px) {
             .widget-grid { grid-template-columns: 1fr; }
@@ -247,108 +217,77 @@
         }
 
         .widget-title {
-            font-size: 1.1rem;
-            font-weight: 700;
-            color: var(--text-main);
-            margin-bottom: 1.2rem;
-            display: flex;
-            align-items: center;
-            gap: 0.6rem;
+            font-size: 1.1rem; font-weight: 700; color: var(--text-main);
+            margin-bottom: 1.2rem; display: flex; align-items: center; gap: 0.6rem;
         }
 
         .display-digital {
-            font-family: 'Space Grotesk', sans-serif;
-            font-size: 2.2rem;
-            font-weight: 700;
-            text-align: center;
-            color: #fff;
-            margin: 1rem 0;
-            letter-spacing: 2px;
+            font-family: 'Space Grotesk', sans-serif; font-size: 2.2rem;
+            font-weight: 700; text-align: center; color: #fff; margin: 1rem 0; letter-spacing: 2px;
         }
 
         .btn-group { display: flex; gap: 0.6rem; }
-
         .btn {
-            flex: 1;
-            padding: 12px;
-            border: none;
-            border-radius: 12px;
-            font-weight: 700;
-            cursor: pointer;
-            transition: 0.2s ease;
+            flex: 1; padding: 12px; border: none; border-radius: 12px;
+            font-weight: 700; cursor: pointer; transition: 0.2s ease;
         }
-
         .btn-primary {
             background: linear-gradient(135deg, var(--primary-accent), var(--secondary-accent));
-            color: #000;
-            box-shadow: 0 4px 15px var(--accent-glow);
+            color: #000; box-shadow: 0 4px 15px var(--accent-glow);
         }
-
         .btn-primary:hover { opacity: 0.9; transform: translateY(-1px); }
-
-        .btn-secondary {
-            background: rgba(255, 255, 255, 0.08);
-            color: #fff;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-        }
-
+        .btn-secondary { background: rgba(255, 255, 255, 0.08); color: #fff; border: 1px solid rgba(255, 255, 255, 0.1); }
         .btn-secondary:hover { background: rgba(255, 255, 255, 0.15); }
 
         .input-style, select {
-            width: 100%;
-            padding: 12px;
-            border-radius: 12px;
-            background: rgba(0, 0, 0, 0.4);
-            border: 1px solid var(--border-glass);
-            color: var(--primary-accent);
-            font-family: 'Space Grotesk', sans-serif;
-            font-size: 1.1rem;
-            outline: none;
-            margin-bottom: 0.8rem;
+            width: 100%; padding: 12px; border-radius: 12px; background: rgba(0, 0, 0, 0.4);
+            border: 1px solid var(--border-glass); color: var(--primary-accent);
+            font-family: 'Space Grotesk', sans-serif; font-size: 1.1rem; outline: none; margin-bottom: 0.8rem;
         }
-
         select option { background: #0d1117; color: #fff; }
 
-        .tips-list {
-            list-style: none;
-            display: flex;
-            flex-direction: column;
-            gap: 0.8rem;
-        }
-
+        .tips-list { list-style: none; display: flex; flex-direction: column; gap: 0.8rem; }
         .tips-list li {
-            background: rgba(0, 0, 0, 0.2);
-            padding: 1rem;
-            border-radius: 14px;
-            border-left: 3px solid var(--primary-accent);
-            font-size: 0.95rem;
-            line-height: 1.5;
-            color: #e2e8f0;
+            background: rgba(0, 0, 0, 0.2); padding: 1rem; border-radius: 14px;
+            border-left: 3px solid var(--primary-accent); font-size: 0.95rem; line-height: 1.5; color: #e2e8f0;
         }
-
         .tips-list strong { color: var(--primary-accent); }
 
         .install-btn {
-            width: 100%;
-            padding: 15px;
-            background: rgba(255, 255, 255, 0.03);
-            border: 1px dashed var(--primary-accent);
-            color: var(--primary-accent);
-            border-radius: 16px;
-            font-weight: 700;
-            font-size: 1rem;
-            cursor: pointer;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            gap: 0.6rem;
-            transition: 0.3s ease;
+            width: 100%; padding: 15px; background: rgba(255, 255, 255, 0.03);
+            border: 1px dashed var(--primary-accent); color: var(--primary-accent);
+            border-radius: 16px; font-weight: 700; font-size: 1rem; cursor: pointer;
+            display: flex; justify-content: center; align-items: center; gap: 0.6rem; transition: 0.3s ease;
+        }
+        .install-btn:hover { background: rgba(255, 255, 255, 0.08); box-shadow: 0 0 20px var(--accent-glow); }
+
+        /* Full Screen Splatter Animation for 100% Target */
+        .splatter-overlay {
+            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+            pointer-events: none; z-index: 9999; display: none; overflow: hidden;
+        }
+        .splatter-active { display: block; animation: bgGlow 3s forwards; }
+
+        .yolk-center {
+            position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%) scale(0);
+            width: 320px; height: 320px; background: radial-gradient(circle, #ffca3a 0%, #ff9200 70%, #d46a00 100%);
+            border-radius: 50%; box-shadow: 0 0 80px rgba(255, 165, 0, 0.8), inset -10px -10px 30px rgba(0,0,0,0.3);
+            animation: explodeYolk 1s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
         }
 
-        .install-btn:hover {
-            background: rgba(255, 255, 255, 0.08);
-            box-shadow: 0 0 20px var(--accent-glow);
+        .drip {
+            position: absolute; background: linear-gradient(180deg, #ffca3a, #ff9200);
+            border-radius: 0 0 50px 50px; top: -150px; width: 45px;
+            box-shadow: 0 10px 20px rgba(255, 145, 0, 0.5);
         }
+
+        @keyframes explodeYolk { 100% { transform: translate(-50%, -50%) scale(2.8); opacity: 0.85; } }
+        @keyframes dripDown {
+            0% { top: -150px; height: 50px; }
+            50% { height: 300px; }
+            100% { top: 110vh; height: 100px; }
+        }
+        @keyframes bgGlow { 100% { background: rgba(255, 183, 3, 0.25); backdrop-filter: blur(4px); } }
     </style>
 </head>
 <body class="theme-gold">
@@ -374,6 +313,37 @@
             <div class="selector-group">
                 <button class="select-btn active" onclick="setTarget('2027')">2027 A/L Target</button>
                 <button class="select-btn" onclick="setTarget('2028')">2028 A/L Target</button>
+            </div>
+
+            <!-- REALISTIC 3D WHITE EGG & PROGRESS -->
+            <div class="egg-progress-wrapper">
+                <div class="egg-container" id="egg-box">
+                    <svg viewBox="0 0 100 130" class="egg-svg">
+                        <defs>
+                            <!-- 3D Realistic White Egg Shading Gradient -->
+                            <radialGradient id="egg3d" cx="35%" cy="30%" r="65%">
+                                <stop offset="0%" stop-color="#ffffff" />
+                                <stop offset="40%" stop-color="#f4f4f6" />
+                                <stop offset="75%" stop-color="#e1e1e8" />
+                                <stop offset="100%" stop-color="#b5b5c3" />
+                            </radialGradient>
+                        </defs>
+
+                        <!-- Egg Shell -->
+                        <path d="M 50,10 C 20,10 5,50 5,80 C 5,110 25,125 50,125 C 75,125 95,110 95,80 C 95,50 80,10 50,10 Z" fill="url(#egg3d)" />
+
+                        <!-- Realistic Cracks (Progressively Revealed) -->
+                        <path d="M 50,12 Q 40,28 55,42 T 42,65" class="egg-crack" id="crack-1" />
+                        <path d="M 42,65 Q 62,80 38,98 T 50,123" class="egg-crack" id="crack-2" />
+                        <path d="M 10,75 Q 26,68 36,82 T 18,108" class="egg-crack" id="crack-3" />
+                        <path d="M 90,70 Q 74,80 82,95 T 88,112" class="egg-crack" id="crack-4" />
+                    </svg>
+                </div>
+                
+                <div class="progress-container">
+                    <div class="progress-fill" id="progress-bar"></div>
+                    <div class="progress-text" id="progress-text">0.0000% Complete</div>
+                </div>
             </div>
 
             <div class="countdown-grid">
@@ -431,20 +401,21 @@
         </button>
     </div>
 
+    <!-- Egg Splatter Animation Overlay -->
+    <div class="splatter-overlay" id="splatter-fx">
+        <div class="yolk-center"></div>
+    </div>
+
     <script>
         // --- Dynamic Service Worker for Offline Support ---
         if ('serviceWorker' in navigator) {
             const swCode = `
-                const CACHE_NAME = 'bio-countdown-v3';
+                const CACHE_NAME = 'bio-countdown-v4';
                 self.addEventListener('install', e => {
-                    e.waitUntil(
-                        caches.open(CACHE_NAME).then(cache => cache.addAll(['./']))
-                    );
+                    e.waitUntil(caches.open(CACHE_NAME).then(cache => cache.addAll(['./'])));
                 });
                 self.addEventListener('fetch', e => {
-                    e.respondWith(
-                        caches.match(e.request).then(res => res || fetch(e.request))
-                    );
+                    e.respondWith(caches.match(e.request).then(res => res || fetch(e.request)));
                 });
             `;
             const blob = new Blob([swCode], { type: 'application/javascript' });
@@ -457,35 +428,100 @@
             document.body.className = themeName;
         }
 
-        // --- Countdown Target Dates ---
+        // --- Target Dates & Progress Logic ---
         const targets = {
-            '2027': new Date('August 3, 2027 08:30:00').getTime(),
-            '2028': new Date('August 3, 2028 08:30:00').getTime()
+            '2027': {
+                end: new Date('August 3, 2027 08:30:00').getTime(),
+                start: new Date('August 1, 2024 00:00:00').getTime()
+            },
+            '2028': {
+                end: new Date('August 3, 2028 08:30:00').getTime(),
+                start: new Date('August 1, 2025 00:00:00').getTime()
+            }
         };
+        
         let currentTarget = '2027';
+        let splattered = false;
 
         function setTarget(year) {
             currentTarget = year;
             document.querySelectorAll('.select-btn').forEach(btn => {
                 btn.classList.toggle('active', btn.innerText.includes(year));
             });
+            
+            // Reset Egg Splatter State when Switching
+            splattered = false;
+            const fx = document.getElementById('splatter-fx');
+            fx.classList.remove('splatter-active');
+            fx.querySelectorAll('.drip').forEach(d => d.remove());
+            document.getElementById('egg-box').style.display = 'block';
+
             updateCountdown();
+        }
+
+        function triggerSplatter() {
+            if (splattered) return;
+            splattered = true;
+            
+            document.getElementById('egg-box').style.display = 'none';
+            const fx = document.getElementById('splatter-fx');
+            fx.classList.add('splatter-active');
+            
+            // Dynamic Egg Yolk Drips across screen
+            for(let i = 0; i < 18; i++) {
+                const drip = document.createElement('div');
+                drip.className = 'drip';
+                drip.style.left = `${Math.random() * 100}vw`;
+                drip.style.width = `${25 + Math.random() * 55}px`;
+                drip.style.animation = `dripDown ${1.2 + Math.random() * 2}s cubic-bezier(0.4, 0, 0.2, 1) forwards`;
+                drip.style.animationDelay = `${Math.random() * 0.6}s`;
+                fx.appendChild(drip);
+            }
+        }
+
+        function updateEggCracks(percentage) {
+            const crack1 = document.getElementById('crack-1');
+            const crack2 = document.getElementById('crack-2');
+            const crack3 = document.getElementById('crack-3');
+            const crack4 = document.getElementById('crack-4');
+
+            // Set crack dash offsets dynamically according to progress %
+            crack1.style.strokeDashoffset = percentage > 20 ? '0' : '200';
+            crack2.style.strokeDashoffset = percentage > 45 ? '0' : '200';
+            crack3.style.strokeDashoffset = percentage > 70 ? '0' : '200';
+            crack4.style.strokeDashoffset = percentage > 90 ? '0' : '200';
         }
 
         function updateCountdown() {
             const now = new Date().getTime();
-            const diff = targets[currentTarget] - now;
+            const data = targets[currentTarget];
+            const diff = data.end - now;
+            
+            const totalDuration = data.end - data.start;
+            const elapsed = now - data.start;
+            let percentage = (elapsed / totalDuration) * 100;
+            
+            if (percentage < 0) percentage = 0;
+            if (percentage > 100) percentage = 100;
+
+            document.getElementById('progress-bar').style.width = `${percentage}%`;
+            document.getElementById('progress-text').innerText = `${percentage.toFixed(4)}% Complete`;
 
             if (diff > 0) {
                 document.getElementById('days').innerText = Math.floor(diff / (1000 * 60 * 60 * 24)).toString().padStart(2, '0');
                 document.getElementById('hours').innerText = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)).toString().padStart(2, '0');
                 document.getElementById('minutes').innerText = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60)).toString().padStart(2, '0');
                 document.getElementById('seconds').innerText = Math.floor((diff % (1000 * 60)) / 1000).toString().padStart(2, '0');
+                
+                updateEggCracks(percentage);
             } else {
                 document.getElementById('days').innerText = "00";
                 document.getElementById('hours').innerText = "00";
                 document.getElementById('minutes').innerText = "00";
                 document.getElementById('seconds').innerText = "00";
+                document.getElementById('progress-text').innerText = `ALCHEMIST TARGET REACHED!`;
+                
+                triggerSplatter();
             }
         }
         setInterval(updateCountdown, 1000);
@@ -520,7 +556,7 @@
             document.getElementById('sw-start').innerText = 'Start Session';
         }
 
-        // --- Robust Web Audio API Synthesizer (Fixed Autoplay Bug) ---
+        // --- Web Audio API Alarm Synthesizer ---
         let audioCtx = null;
         let activeOscillators = [];
         let soundTimer = null;
@@ -536,26 +572,18 @@
             return audioCtx;
         }
 
-        // Enable Audio Context on First User Click anywhere on Page
-        document.addEventListener('click', () => {
-            getAudioContext();
-        }, { once: true });
+        document.addEventListener('click', () => { getAudioContext(); }, { once: true });
 
         function stopSound() {
-            if (soundTimer) {
-                clearTimeout(soundTimer);
-                soundTimer = null;
-            }
-            activeOscillators.forEach(osc => {
-                try { osc.stop(); osc.disconnect(); } catch(e) {}
-            });
+            if (soundTimer) { clearTimeout(soundTimer); soundTimer = null; }
+            activeOscillators.forEach(osc => { try { osc.stop(); osc.disconnect(); } catch(e) {} });
             activeOscillators = [];
             isPlayingSound = false;
             document.getElementById('test-btn').innerText = 'Test Sound';
         }
 
         function playSelectedSound(durationSec = 20) {
-            stopSound(); // Clear any playing instance
+            stopSound();
             const ctx = getAudioContext();
             isPlayingSound = true;
             document.getElementById('test-btn').innerText = 'Stop Sound';
@@ -564,100 +592,64 @@
             const startTime = ctx.currentTime;
 
             if (type === 'radar') {
-                // High Pitch Radar Beep Sequence
                 for (let t = 0; t < durationSec; t += 0.8) {
-                    const osc1 = ctx.createOscillator();
-                    const osc2 = ctx.createOscillator();
+                    const osc1 = ctx.createOscillator(); const osc2 = ctx.createOscillator();
                     const gain = ctx.createGain();
-
                     osc1.type = 'sine'; osc2.type = 'sine';
                     osc1.frequency.setValueAtTime(1760, startTime + t);
                     osc2.frequency.setValueAtTime(2637, startTime + t);
-
                     gain.gain.setValueAtTime(0.4, startTime + t);
                     gain.gain.exponentialRampToValueAtTime(0.0001, startTime + t + 0.35);
-
-                    osc1.connect(gain); osc2.connect(gain);
-                    gain.connect(ctx.destination);
-
+                    osc1.connect(gain); osc2.connect(gain); gain.connect(ctx.destination);
                     osc1.start(startTime + t); osc2.start(startTime + t);
                     osc1.stop(startTime + t + 0.35); osc2.stop(startTime + t + 0.35);
-
                     activeOscillators.push(osc1, osc2);
                 }
             } else if (type === 'siren') {
-                // Heavy Siren
                 for (let t = 0; t < durationSec; t += 1.2) {
-                    const osc = ctx.createOscillator();
-                    const gain = ctx.createGain();
-
+                    const osc = ctx.createOscillator(); const gain = ctx.createGain();
                     osc.type = 'sawtooth';
                     osc.frequency.setValueAtTime(500, startTime + t);
                     osc.frequency.linearRampToValueAtTime(1400, startTime + t + 0.6);
                     osc.frequency.linearRampToValueAtTime(500, startTime + t + 1.2);
-
                     gain.gain.setValueAtTime(0.3, startTime + t);
                     gain.gain.exponentialRampToValueAtTime(0.0001, startTime + t + 1.15);
-
                     osc.connect(gain); gain.connect(ctx.destination);
                     osc.start(startTime + t); osc.stop(startTime + t + 1.15);
-
                     activeOscillators.push(osc);
                 }
             } else if (type === 'brass') {
-                // Epic Brass Pattern
-                const notes = [261.63, 329.63, 392.00, 523.25, 392.00, 523.25];
-                let count = 0;
+                const notes = [261.63, 329.63, 392.00, 523.25, 392.00, 523.25]; let count = 0;
                 for (let t = 0; t < durationSec; t += 0.5) {
-                    const osc = ctx.createOscillator();
-                    const gain = ctx.createGain();
-
+                    const osc = ctx.createOscillator(); const gain = ctx.createGain();
                     osc.type = 'triangle';
                     osc.frequency.setValueAtTime(notes[count % notes.length], startTime + t);
-
                     gain.gain.setValueAtTime(0.4, startTime + t);
                     gain.gain.exponentialRampToValueAtTime(0.0001, startTime + t + 0.45);
-
                     osc.connect(gain); gain.connect(ctx.destination);
                     osc.start(startTime + t); osc.stop(startTime + t + 0.45);
-
-                    activeOscillators.push(osc);
-                    count++;
+                    activeOscillators.push(osc); count++;
                 }
             } else if (type === 'techno') {
-                // Cyberpunk Arpeggio
-                const arpeggio = [440, 554.37, 659.25, 830.61, 880, 1108.73];
-                let count = 0;
+                const arpeggio = [440, 554.37, 659.25, 830.61, 880, 1108.73]; let count = 0;
                 for (let t = 0; t < durationSec; t += 0.15) {
-                    const osc = ctx.createOscillator();
-                    const gain = ctx.createGain();
-
+                    const osc = ctx.createOscillator(); const gain = ctx.createGain();
                     osc.type = 'square';
                     osc.frequency.setValueAtTime(arpeggio[count % arpeggio.length], startTime + t);
-
                     gain.gain.setValueAtTime(0.2, startTime + t);
                     gain.gain.exponentialRampToValueAtTime(0.0001, startTime + t + 0.12);
-
                     osc.connect(gain); gain.connect(ctx.destination);
                     osc.start(startTime + t); osc.stop(startTime + t + 0.12);
-
-                    activeOscillators.push(osc);
-                    count++;
+                    activeOscillators.push(osc); count++;
                 }
             }
 
-            soundTimer = setTimeout(() => {
-                stopSound();
-            }, durationSec * 1000);
+            soundTimer = setTimeout(() => { stopSound(); }, durationSec * 1000);
         }
 
         function toggleTestSound() {
             getAudioContext();
-            if (isPlayingSound) {
-                stopSound();
-            } else {
-                playSelectedSound(20);
-            }
+            if (isPlayingSound) stopSound(); else playSelectedSound(20);
         }
 
         // --- Alarm System Logic ---
@@ -665,12 +657,9 @@
         let alarmInterval = null;
 
         function setAlarm() {
-            getAudioContext(); // Activate Audio Context on button click
+            getAudioContext(); 
             const val = document.getElementById('alarm-time').value;
-            if (!val) {
-                alert("කරුණාකර Alarm එක සඳහා වෙලාවක් තෝරන්න!");
-                return;
-            }
+            if (!val) { alert("කරුණාකර Alarm එක සඳහා වෙලාවක් තෝරන්න!"); return; }
             
             alarmTime = val;
             document.getElementById('alarm-status').innerText = `🔔 Alarm Active for ${alarmTime}`;
@@ -681,9 +670,7 @@
                 const currentTime = now.getHours().toString().padStart(2, '0') + ":" + now.getMinutes().toString().padStart(2, '0');
                 if (alarmTime === currentTime && now.getSeconds() === 0) {
                     playSelectedSound(20);
-                    setTimeout(() => {
-                        alert('⏰ TIME TO STUDY! Bio Alchemist Session Started!');
-                    }, 300);
+                    setTimeout(() => { alert('⏰ TIME TO STUDY! Bio Alchemist Session Started!'); }, 300);
                     clearAlarm();
                 }
             }, 1000);
@@ -709,7 +696,7 @@
                 deferredPrompt.prompt();
                 deferredPrompt.userChoice.then(() => { deferredPrompt = null; });
             } else {
-                alert('මචං, Browser Menu (⋮ or Share) එකට ගිහින් "Add to Home Screen" තෝරන්න!');
+                alert('Browser Menu (⋮ හෝ Share) එකට ගිහින් "Add to Home Screen" තෝරන්න!');
             }
         }
 
